@@ -5,8 +5,12 @@ function About() {
   return (
     <>
       <Navbar />
-      <h1>About</h1>
-      <p>This is the About page.</p>
+      <main className="min-h-[76vh] flex flex-col justify-center items-center text-center px-6">
+        <h1 className="text-5xl font-bold mb-4">About</h1>
+        <p className="text-xl">
+          This is the About page.
+        </p>
+      </main>
       <Footer />
     </>
   );
