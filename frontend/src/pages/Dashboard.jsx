@@ -6,7 +6,7 @@ function Dashboard() {
     <>
       <Navbar />
 
-      <main className="min-h-[76vh] flex flex-col justify-center items-center text-center px-6">
+      <main className="min-h-[80vh] flex flex-col justify-center items-center text-center px-6">
         <h1 className="text-5xl font-bold mb-4">Dashboard</h1>
 
         <p className="text-xl">
