@@ -21,7 +21,10 @@ export function ThemeProvider({ children }) {
         toggleTheme,
       }}
     >
-      <div className={theme}>{children}</div>
+      
+      <div className={theme === "dark" ? "dark" : ""}>
+  {children}
+</div>
     </ThemeContext.Provider>
   );
 }

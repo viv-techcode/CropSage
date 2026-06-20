@@ -1,193 +1,221 @@
-import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useTheme } from "../context/ThemeContext";
+import {
+  FaSeedling,
+  FaChartLine,
+  FaCalculator,
+  FaRobot,
+  FaCloudSunRain,
+  FaUsers,
+  FaTractor,
+  FaGlobeAsia,
+} from "react-icons/fa";
 
 function About() {
-  const [lang, setLang] = useState("en");
+  const { theme } = useTheme();
+const darkMode = theme === "dark";
 
-  const content = {
-    en: {
-      title: "Farming decisions, backed by data — not guesswork.",
-      subtitle:
-        "CropSage is an AI-powered farming platform that helps farmers grow more profitably.",
-      audienceTitle: "Built for the people who work the land.",
-      audience: [
-        "Individual Farmers",
-        "Agricultural Cooperatives",
-        "Small-scale Farm Owners",
-        "Rural & Semi-urban Communities",
-      ],
-      features: [
-        {
-          title: "Smart Crop Planner",
-          desc: "Recommends suitable crops based on location, season, land size and weather.",
-        },
-        {
-          title: "Market Price Intelligence",
-          desc: "Real-time mandi and market prices with trend analysis.",
-        },
-        {
-          title: "Harvest Profit Calculator",
-          desc: "Estimate earnings using yield, costs and market prices.",
-        },
-        {
-          title: "AI Farm Assistant",
-          desc: "Personalized farming guidance in simple language.",
-        },
-        {
-          title: "Weather Risk Alerts",
-          desc: "Warnings for heavy rainfall, storms and heatwaves.",
-        },
-      ],
-      quote:
-        "Every season, farmers make dozens of decisions with too little information. CropSage exists to put that information back in their hands.",
+console.log("About Theme:", theme);
+  const features = [
+    {
+      icon: <FaSeedling />,
+      title: "Smart Crop Planner",
+      description:
+        "Recommends the most suitable crops based on your location, land size, season, weather patterns, and historical agricultural data.",
     },
-
-    hi: {
-      title: "खेती के फ़ैसले, अब अंदाज़े पर नहीं — डेटा पर आधारित।",
-      subtitle:
-        "CropSage किसानों को बेहतर मुनाफ़े के साथ खेती करने में मदद करता है।",
-      audienceTitle: "ज़मीन पर मेहनत करने वालों के लिए बनाया गया।",
-      audience: [
-        "व्यक्तिगत किसान",
-        "कृषि सहकारी समितियाँ",
-        "छोटे फ़ार्म मालिक",
-        "ग्रामीण समुदाय",
-      ],
-      features: [
-        {
-          title: "स्मार्ट क्रॉप प्लानर",
-          desc: "स्थान, मौसम और ज़मीन के आधार पर फ़सल सुझाव।",
-        },
-        {
-          title: "मार्केट प्राइस इंटेलिजेंस",
-          desc: "रियल-टाइम मंडी भाव और बाज़ार विश्लेषण।",
-        },
-        {
-          title: "हार्वेस्ट प्रॉफिट कैलकुलेटर",
-          desc: "लागत, उपज और बाज़ार मूल्य से लाभ का अनुमान।",
-        },
-        {
-          title: "AI फ़ार्म असिस्टेंट",
-          desc: "सरल भाषा में कृषि मार्गदर्शन।",
-        },
-        {
-          title: "वेदर रिस्क अलर्ट",
-          desc: "बारिश, लू और तूफ़ान की चेतावनी।",
-        },
-      ],
-      quote:
-        "CropSage किसानों को उनकी भाषा में सही जानकारी पहुँचाने के लिए बनाया गया है।",
+    {
+      icon: <FaChartLine />,
+      title: "Market Price Intelligence",
+      description:
+        "Real-time mandi and market prices help you compare markets, track trends, and identify the best selling opportunities.",
     },
-  };
+    {
+      icon: <FaCalculator />,
+      title: "Harvest Profit Calculator",
+      description:
+        "Estimate expected earnings by combining cultivation costs, projected yield, and market prices across multiple crop options.",
+    },
+    {
+      icon: <FaRobot />,
+      title: "AI Farm Assistant",
+      description:
+        "Get simple answers and personalized farming guidance on crops, market trends, farming practices, and risk management.",
+    },
+    {
+      icon: <FaCloudSunRain />,
+      title: "Weather Risk Alerts",
+      description:
+        "Receive alerts for heavy rainfall, storms, heatwaves, and other weather risks along with preventive recommendations.",
+    },
+  ];
 
-  const t = content[lang];
+  const users = [
+    {
+      icon: <FaTractor />,
+      title: "Individual Farmers",
+      description:
+        "From smallholders to larger landowners planning crops, harvests, and market timing.",
+    },
+    {
+      icon: <FaUsers />,
+      title: "Agricultural Cooperatives",
+      description:
+        "Coordinate planning, production, and market access across multiple member farms.",
+    },
+    {
+      icon: <FaSeedling />,
+      title: "Small-Scale Farm Owners",
+      description:
+        "Manage costs, improve profitability, and reduce risks with data-driven decisions.",
+    },
+    {
+      icon: <FaGlobeAsia />,
+      title: "Rural & Semi-Urban Communities",
+      description:
+        "Access reliable agricultural information where every decision can impact seasonal income.",
+    },
+  ];
 
   return (
-    <>
+    <div>
       <Navbar />
+      
+      
 
-      <main className="bg-[#F6F1E2] text-[#21261C] min-h-screen">
-        {/* Language Switcher */}
-        <section className="border-b border-[#D8CBA8] bg-[#EFE6CE]">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-end">
-            <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={() => setLang("en")}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  lang === "en"
-                    ? "bg-green-800 text-white"
-                    : "bg-white border"
-                }`}
-              >
-                English
-              </button>
+      {/* Main Content Wrapper */}
+      <div className="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300">
+        
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-green-700 to-emerald-600 dark:from-emerald-900 dark:to-teal-950 text-white py-20 transition-all duration-300">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h1 className="text-5xl font-bold mb-4">About CropSage</h1>
+            <p className="text-xl max-w-3xl mx-auto text-green-50 dark:text-emerald-200">
+              Farming decisions, backed by data — not guesswork.
+            </p>
+          </div>
+        </section>
 
-              <button
-                onClick={() => setLang("hi")}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  lang === "hi"
-                    ? "bg-green-800 text-white"
-                    : "bg-white border"
-                }`}
-              >
-                हिंदी
-              </button>
+        {/* Intro Section */}
+        <section className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-green-700 dark:text-emerald-400">What We Do</h2>
+              <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">
+                CropSage transforms weather forecasts, soil conditions, and
+                market intelligence into clear, practical recommendations that
+                help farmers make better decisions throughout the season.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-green-700 dark:text-emerald-400">Why It Matters</h2>
+              <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">
+                Many crop losses happen because critical decisions are made with
+                limited information. CropSage helps bridge that gap by putting
+                reliable insights directly into farmers' hands.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Hero */}
-        <section className="max-w-6xl mx-auto px-6 py-20">
-          <span className="uppercase tracking-widest text-orange-600 text-sm font-bold">
-            About CropSage
-          </span>
-
-          <h1 className="text-4xl md:text-6xl font-bold mt-4 max-w-4xl leading-tight text-green-950">
-            {t.title}
-          </h1>
-
-          <p className="mt-6 text-lg text-gray-700 max-w-3xl">
-            {t.subtitle}
-          </p>
-        </section>
-
-        {/* Audience */}
-        <section className="bg-[#22361F] py-20">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
-              {t.audienceTitle}
+        {/* Who it's for */}
+        <section className="bg-white dark:bg-slate-800/50 py-20 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-4 text-slate-800 dark:text-white">
+              Who It's For
             </h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {t.audience.map((item, index) => (
+            <p className="text-center text-gray-600 dark:text-slate-300 max-w-3xl mx-auto mb-12">
+              Built for the realities of rural and semi-urban farming — low
+              connectivity, mixed literacy levels, and decisions that cannot
+              wait.
+            </p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {users.map((user, index) => (
                 <div
                   key={index}
-                  className="bg-[#2B4327] p-6 border border-green-900"
+                  className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-black/30 border border-transparent dark:border-slate-700/50 transition-all"
                 >
-                  <h3 className="text-white font-semibold">{item}</h3>
+                  <div className="text-3xl text-green-600 dark:text-emerald-400 mb-4">
+                    {user.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-100">
+                    {user.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-slate-300">{user.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className="max-w-6xl mx-auto px-6 py-20">
-          <h2 className="text-4xl font-bold text-green-950 mb-12">
-            Five tools, one season-long companion.
-          </h2>
+        {/* Features / Tools Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-4 text-slate-800 dark:text-white">
+              Five Tools. One Smarter Growing Season.
+            </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {t.features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white border border-[#D8CBA8] p-6 rounded-md shadow-sm hover:shadow-md transition"
-              >
-                <h3 className="text-xl font-semibold text-green-900 mb-3">
-                  {feature.title}
-                </h3>
+            <p className="text-center text-gray-600 dark:text-slate-300 max-w-3xl mx-auto mb-14">
+              From crop selection to harvest planning, CropSage combines
+              intelligent recommendations, market insights, and weather awareness
+              into one unified farming platform.
+            </p>
 
-                <p className="text-gray-600">{feature.desc}</p>
-              </div>
-            ))}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-black/20 p-8 border border-transparent dark:border-slate-700/50 hover:shadow-lg dark:hover:shadow-black/40 transition-all"
+                >
+                  <div className="text-4xl text-green-600 dark:text-emerald-400 mb-4">
+                    {feature.icon}
+                  </div>
+
+                  <h3 className="text-2xl font-semibold mb-3 text-slate-800 dark:text-slate-100">
+                    {feature.title}
+                  </h3>
+
+                  <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Mission */}
-        <section className="bg-[#EFE6CE] border-y border-[#D8CBA8]">
-          <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-            <blockquote className="text-2xl md:text-3xl font-serif text-green-950 leading-relaxed">
-              "{t.quote}"
+        {/* Quote Section */}
+        <section className="bg-green-700 dark:bg-emerald-900 text-white py-20 transition-colors duration-300">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <blockquote className="text-3xl font-medium leading-relaxed italic">
+              "Every season brings critical decisions. CropSage helps farmers make 
+              them with confidence through data-driven insights, market intelligence, 
+              and timely guidance."
             </blockquote>
 
-            <p className="mt-6 text-gray-600">— CropSage Team</p>
+            <p className="mt-6 text-green-100 dark:text-emerald-200 text-lg">
+              — The CropSage Team
+            </p>
           </div>
         </section>
-      </main>
+
+        {/* Closing Title Wrapper */}
+        <section className="py-20 text-center max-w-4xl mx-auto px-6">
+          <h2 className="text-4xl font-bold mb-4 text-green-700 dark:text-emerald-400">
+            CropSage
+          </h2>
+
+          <p className="text-xl text-gray-600 dark:text-slate-300">
+            AI-powered farming for smarter agricultural decisions.
+          </p>
+        </section>
+      </div>
 
       <Footer />
-    </>
+    </div>
   );
 }
 
