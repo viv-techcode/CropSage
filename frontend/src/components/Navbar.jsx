@@ -15,19 +15,23 @@ function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/dashboard">Dashboard</Link>
+
+        {/* New AI Assistant link */}
+        <Link to="/ai-assistant">AI Assistant</Link>
+
         <Link to="/login">Login</Link>
         <Link to="/components">Components</Link>
 
         <button
-  onClick={toggleTheme}
-  className="px-3 py-1 border rounded bg-white"
->
-  {theme === "light" ? (
-    <FaMoon className="text-black text-lg" />
-  ) : (
-    <FaSun className="text-yellow-500 text-lg" />
-  )}
-</button>
+          onClick={toggleTheme}
+          className="px-3 py-1 border rounded bg-white"
+        >
+          {theme === "light" ? (
+            <FaMoon className="text-black text-lg" />
+          ) : (
+            <FaSun className="text-yellow-500 text-lg" />
+          )}
+        </button>
       </div>
     </nav>
   );
