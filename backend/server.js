@@ -11,7 +11,11 @@ dotenv.config();
 connectDB();
 
 const app = express();
-
+app.get("/", (req, res) => {
+    res.json({
+        message: "CropSage Backend is Running"
+    });
+});
 app.use(cors());
 app.use(express.json());
 
