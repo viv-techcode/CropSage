@@ -1,6 +1,9 @@
+import React from "react";
 import styles from "./Dashboard.module.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { NavLink } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const stats = [
   { title: "Crops", value: "7", info: "3 Recommended" },
@@ -37,60 +40,85 @@ const alerts = [
   },
 ];
 
+// Helper to handle active styling for NavLink
+const getNavLinkClass = ({ isActive }) =>
+  `${styles.menuLink} ${isActive ? styles.active : ""}`;
+
 function Dashboard() {
+  // Moved hook calls safely above the return statement
+  const { theme } = useTheme();
+  const darkMode = theme === "dark";
+
   return (
     <>
       <Navbar />
 
-      {/* 1. dashboard-layout -> styles.dashboardLayout */}
-      <main className={styles.dashboardLayout}>
-
+      <main
+        className={`${styles.dashboardLayout} ${
+          darkMode ? styles.darkMode : ""
+        }`}
+      >
         <aside className={styles.sidebar}>
+          <div>
+            <h3 className={styles.sidebarTitle}>Navigation</h3>
 
-  <div>
+            <ul className={styles.menu}>
+              <li>
+                <NavLink to="/dashboard" className={getNavLinkClass}>
+                  📊 Dashboard
+                </NavLink>
+              </li>
 
-    <h3 className={styles.sidebarTitle}>Navigation</h3>
+              <li>
+                <NavLink to="/crop-planner" className={getNavLinkClass}>
+                  🌱 Crop Planner
+                </NavLink>
+              </li>
 
-    <ul className={styles.menu}>
-      <li className={styles.active}>📊 Dashboard</li>
-      <li>🌱 Crop Planner</li>
-      <li>💰 Market Prices</li>
-      <li>🧮 Profit Calculator</li>
-      <li>🤖 AI Assistant</li>
-      <li>🌦 Weather</li>
-    </ul>
+              <li>
+                <NavLink to="/market-prices" className={getNavLinkClass}>
+                  💰 Market Prices
+                </NavLink>
+              </li>
 
-  </div>
+              <li>
+                <NavLink to="/profit-calculator" className={getNavLinkClass}>
+                  🧮 Profit Calculator
+                </NavLink>
+              </li>
 
-  {/* Bottom Profile */}
-  <div className={styles.profile}>
+              <li>
+                <NavLink to="/ai-assistant" className={getNavLinkClass}>
+                  🤖 AI Assistant
+                </NavLink>
+              </li>
 
-    <div className={styles.avatar}>
-      RP
-    </div>
+              <li>
+                <NavLink to="/weather" className={getNavLinkClass}>
+                  🌦 Weather
+                </NavLink>
+              </li>
+            </ul>
+          </div>
 
-    <div className={styles.profileInfo}>
-      <h4>Ramesh P.</h4>
-      <p>Anand, GJ</p>
-    </div>
+          {/* Bottom Profile */}
+          <div className={styles.profile}>
+            <div className={styles.avatar}>RP</div>
+            <div className={styles.profileInfo}>
+              <h4>Ramesh P.</h4>
+              <p>Anand, GJ</p>
+            </div>
+          </div>
+        </aside>
 
-  </div>
-
-</aside>
-
-        {/* 6. dashboard -> styles.dashboard */}
         <section className={styles.dashboard}>
-
-          {/* 7. welcome -> styles.welcome */}
           <div className={styles.welcome}>
             <h1>Good Morning, Ramesh 👋</h1>
             <p>Kharif Season • Saturday, 21 June 2026</p>
           </div>
 
-          {/* 8. stats -> styles.stats */}
           <section className={styles.stats}>
             {stats.map((item) => (
-              /* 9. stat-card -> styles.statCard */
               <div className={styles.statCard} key={item.title}>
                 <span>{item.title}</span>
                 <h2>{item.value}</h2>
@@ -99,28 +127,20 @@ function Dashboard() {
             ))}
           </section>
 
-          {/* 10. grid -> styles.grid */}
           <section className={styles.grid}>
-
             {/* Left Column */}
             <div>
-
-              {/* 11. card -> styles.card */}
               <div className={styles.card}>
                 <h3>Recommended Crops</h3>
 
                 {crops.map((crop) => (
-                  /* 12. crop -> styles.crop */
                   <div className={styles.crop} key={crop.name}>
-
                     <div>
                       <h4>{crop.name}</h4>
                       <p>{crop.area}</p>
                     </div>
 
-                    {/* 13. progress -> styles.progress */}
                     <div className={styles.progress}>
-                      {/* 14. fill -> styles.fill */}
                       <div
                         className={styles.fill}
                         style={{ width: `${crop.score}%` }}
@@ -128,53 +148,36 @@ function Dashboard() {
                     </div>
 
                     <strong>{crop.score}%</strong>
-
                   </div>
                 ))}
               </div>
 
               <div className={styles.card}>
                 <h3>Market Price Trend</h3>
-
-                {/* 15. chart -> styles.chart */}
-                <div className={styles.chart}>
-                  Chart.js / Recharts
-                </div>
+                <div className={styles.chart}>Chart.js / Recharts</div>
               </div>
-
             </div>
 
             {/* Right Column */}
             <div>
-
               <div className={styles.card}>
                 <h3>Weather Alerts</h3>
 
                 {alerts.map((alert) => (
-                  /* 16. alert -> styles.alert */
                   <div className={styles.alert} key={alert.title}>
-
-                    {/* 17. top -> styles.top */}
                     <div className={styles.top}>
                       <strong>{alert.title}</strong>
                       <span>{alert.level}</span>
                     </div>
 
                     <small>{alert.date}</small>
-
                     <p>{alert.advice}</p>
-
                   </div>
                 ))}
-
               </div>
-
             </div>
-
           </section>
-
         </section>
-
       </main>
 
       <Footer />

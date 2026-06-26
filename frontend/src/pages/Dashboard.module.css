@@ -49,6 +49,17 @@
     color: #2e7d32;
 }
 
+.menuLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+}
+
+.menuLink:hover {
+  color: #16a34a;
+}
+
 /* Scoped directly because you use className={styles.active} */
 .active {
     background: #2e7d32;
@@ -284,4 +295,77 @@
     margin:2px 0 0;
     font-size:12px;
     color:#6b7280;
+}
+
+.welcomeTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.themeButton {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #166534;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.themeButton:hover {
+  background: #14532d;
+}
+
+.darkMode {
+  background: #111827;
+  color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.darkMode .dashboard {
+  background: #111827;
+}
+
+.darkMode .sidebar {
+  background: #1f2937;
+}
+
+.darkMode .card,
+.darkMode .statCard {
+  background: #1f2937;
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+.darkMode .menuLink {
+  color: #e5e7eb;
+}
+
+.darkMode .menuLink:hover {
+  background: #374151;
+}
+
+.darkMode .profile {
+  border-top: 1px solid #374151;
+}
+
+.darkMode .chart {
+  background: #374151;
+}
+
+.darkMode .alert {
+  background: #374151;
+}
+
+.darkMode h1,
+.darkMode h2,
+.darkMode h3,
+.darkMode h4,
+.darkMode p,
+.darkMode span,
+.darkMode small,
+.darkMode strong {
+  color: #f3f4f6;
 }
