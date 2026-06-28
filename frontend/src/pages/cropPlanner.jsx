@@ -1,5 +1,4 @@
-// CropPlanner.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCrops } from "../context/CropContext";
 import {
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 
 const emptyCrop = {
-  name: "",
+  cropName: "",
   quantity: "",
   unit: "kg",
   location: "",
@@ -28,11 +27,18 @@ const emptyCrop = {
 export default function CropPlanner() {
   const navigate = useNavigate();
   
-  const { crops, setCrops } = useCrops();
+  const {
+    crops,
+    loading,
+    createCrop,
+    editCrop,
+    removeCrop,
+  } = useCrops();
+
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [seasonFilter, setSeasonFilter] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("cropName");
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -40,11 +46,16 @@ export default function CropPlanner() {
 
   const [deleteCrop, setDeleteCrop] = useState(null);
 
+  console.log("Crops from Context:", crops);
+
   const filtered = useMemo(() => {
     let list = [...crops];
 
-    list = list.filter((c) =>
-      c.name.toLowerCase().includes(search.toLowerCase())
+    list = list.filter(
+      (c) =>
+        c &&
+        typeof c.cropName === "string" &&
+        c.cropName.toLowerCase().includes(search.toLowerCase())
     );
 
     if (locationFilter)
@@ -56,7 +67,7 @@ export default function CropPlanner() {
     list.sort((a, b) => {
       if (sortBy === "price") return b.price - a.price;
       if (sortBy === "quantity") return b.quantity - a.quantity;
-      return a.name.localeCompare(b.name);
+      return (a.cropName || "").localeCompare(b.cropName || "");
     });
 
     return list;
@@ -71,36 +82,31 @@ export default function CropPlanner() {
 
   const locations = [...new Set(crops.map((c) => c.location))];
 
-  const saveCrop = () => {
-    if (editing) {
-      setCrops(
-        crops.map((c) =>
-          c.id === editing.id
-            ? {
-                ...editing,
-                ...form,
-                quantity: Number(form.quantity),
-                price: Number(form.price),
-              }
-            : c
-        )
-      );
-    } else {
-      setCrops([
-        ...crops,
-        {
-          id: Date.now(),
-          ...form,
-          quantity: Number(form.quantity),
-          price: Number(form.price),
-        },
-      ]);
-    }
+  const saveCrop = async () => {
+    try {
+      const cropData = {
+        ...form,
+        quantity: Number(form.quantity),
+        price: Number(form.price),
+      };
 
-    setEditing(null);
-    setForm(emptyCrop);
-    setShowModal(false);
+      if (editing) {
+        await editCrop(editing._id, cropData);
+      } else {
+        await createCrop(cropData);
+      }
+
+      setEditing(null);
+      setForm(emptyCrop);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  if (loading) {
+    return <div className="p-8 text-center text-gray-600 font-semibold">Loading crops...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -217,9 +223,10 @@ export default function CropPlanner() {
 
           <select
             className="border rounded-lg p-2"
+            value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="name">Name</option>
+            <option value="cropName">Name</option>
             <option value="price">Price</option>
             <option value="quantity">Quantity</option>
           </select>
@@ -241,8 +248,8 @@ export default function CropPlanner() {
             </thead>
             <tbody>
               {filtered.map((crop) => (
-                <tr key={crop.id} className="border-b">
-                  <td className="p-3">{crop.name}</td>
+                <tr key={crop._id} className="border-b">
+                  <td className="p-3">{crop.cropName}</td>
                   <td>
                     {crop.quantity} {crop.unit}
                   </td>
@@ -286,9 +293,9 @@ export default function CropPlanner() {
                 <input
                   placeholder="Crop Name"
                   className="border w-full p-2 rounded"
-                  value={form.name}
+                  value={form.cropName}
                   onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
+                    setForm({ ...form, cropName: e.target.value })
                   }
                 />
 
@@ -390,7 +397,7 @@ export default function CropPlanner() {
           <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
             <div className="bg-white rounded-xl p-6 w-[400px]">
               <h2 className="text-xl font-bold">
-                Delete {deleteCrop.name}?
+                Delete {deleteCrop.cropName}?
               </h2>
               <p className="text-gray-500 mt-3">
                 This action cannot be undone.
@@ -404,11 +411,13 @@ export default function CropPlanner() {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    setCrops(
-                      crops.filter((c) => c.id !== deleteCrop.id)
-                    );
-                    setDeleteCrop(null);
+                  onClick={async () => {
+                    try {
+                      await removeCrop(deleteCrop._id);
+                      setDeleteCrop(null);
+                    } catch (err) {
+                      console.error(err);
+                    }
                   }}
                   className="bg-red-600 text-white px-5 py-2 rounded"
                 >

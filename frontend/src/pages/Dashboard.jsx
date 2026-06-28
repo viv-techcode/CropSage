@@ -34,26 +34,18 @@ function Dashboard() {
   const { theme } = useTheme();
   const darkMode = theme === "dark";
 
-  // Shared crop data from context
-  const { crops } = useCrops();
+  const { crops, loading } = useCrops();
 
-  // Dashboard statistics
-  const totalQuantity = crops.reduce(
-    (sum, crop) => sum + crop.quantity,
-    0
-  );
+  const totalQuantity = crops ? crops.reduce((sum, crop) => sum + crop.quantity, 0) : 0;
 
-  const estimatedValue = crops.reduce(
-    (sum, crop) => sum + crop.quantity * crop.price,
-    0
-  );
+  const estimatedValue = crops ? crops.reduce((sum, crop) => sum + crop.quantity * crop.price, 0) : 0;
 
-  const locations = new Set(crops.map((c) => c.location)).size;
+  const locations = crops ? new Set(crops.map((c) => c.location)).size : 0;
 
   const stats = [
     {
       title: "Total Crops",
-      value: crops.length,
+      value: crops ? crops.length : 0,
       info: "Active Crops",
     },
     {
@@ -73,16 +65,19 @@ function Dashboard() {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
 
-      <main
-        className={`${styles.dashboardLayout} ${
-          darkMode ? styles.darkMode : ""
-        }`}
-      >
-        {/* Sidebar */}
+      <main className={`${styles.dashboardLayout} ${darkMode ? styles.darkMode : ""}`}>
         <aside className={styles.sidebar}>
           <div>
             <h3 className={styles.sidebarTitle}>Navigation</h3>
@@ -136,14 +131,12 @@ function Dashboard() {
           </div>
         </aside>
 
-        {/* Main Dashboard */}
         <section className={styles.dashboard}>
           <div className={styles.welcome}>
             <h1>Good Morning, Ramesh 👋</h1>
             <p>Kharif Season • Saturday, 21 June 2026</p>
           </div>
 
-          {/* Statistics */}
           <section className={styles.stats}>
             {stats.map((item) => (
               <div className={styles.statCard} key={item.title}>
@@ -158,13 +151,13 @@ function Dashboard() {
             <div>
               <div className={styles.card}>
                 <h3>Crop Inventory</h3>
-                                {crops.length === 0 ? (
+                {!crops || crops.length === 0 ? (
                   <p>No crops added yet.</p>
                 ) : (
                   crops.map((crop) => (
-                    <div className={styles.crop} key={crop.id}>
+                    <div className={styles.crop} key={crop._id}>
                       <div>
-                        <h4>{crop.name}</h4>
+                        <h4>{crop.cropName}</h4>
                         <p>
                           {crop.location} • {crop.season}
                         </p>
@@ -174,10 +167,11 @@ function Dashboard() {
                         <div
                           className={styles.fill}
                           style={{
-                            width: `${Math.min(
-                              (crop.quantity / totalQuantity) * 100,
-                              100
-                            )}%`,
+                            width: `${
+                              totalQuantity
+                                ? Math.min((crop.quantity / totalQuantity) * 100, 100)
+                                : 0
+                            }%`,
                           }}
                         />
                       </div>
@@ -208,13 +202,11 @@ function Dashboard() {
                   </p>
 
                   <p>
-                    <strong>Registered Crops:</strong> {crops.length}
+                    <strong>Registered Crops:</strong> {crops ? crops.length : 0}
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Right Column */}
 
             <div>
               <div className={styles.card}>
@@ -238,39 +230,36 @@ function Dashboard() {
               <div className={styles.card}>
                 <h3>Recent Crops</h3>
 
-                {crops
-                  .slice()
-                  .reverse()
-                  .slice(0, 5)
-                  .map((crop) => (
-                    <div
-                      key={crop.id}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "10px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <div>
-                        <strong>{crop.name}</strong>
+                {crops &&
+                  crops
+                    .slice()
+                    .reverse()
+                    .slice(0, 5)
+                    .map((crop) => (
+                      <div
+                        key={crop._id}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "10px 0",
+                          borderBottom: "1px solid #eee",
+                        }}
+                      >
+                        <div>
+                          <strong>{crop.cropName}</strong>
 
-                        <p style={{ margin: 0 }}>
-                          {crop.location}
-                        </p>
+                          <p style={{ margin: 0 }}>{crop.location}</p>
+                        </div>
+
+                        <div style={{ textAlign: "right" }}>
+                          <strong>
+                            {crop.quantity} {crop.unit}
+                          </strong>
+
+                          <p style={{ margin: 0 }}>₹{crop.price}/kg</p>
+                        </div>
                       </div>
-
-                      <div style={{ textAlign: "right" }}>
-                        <strong>
-                          {crop.quantity} {crop.unit}
-                        </strong>
-
-                        <p style={{ margin: 0 }}>
-                          ₹{crop.price}/kg
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
               </div>
             </div>
           </section>

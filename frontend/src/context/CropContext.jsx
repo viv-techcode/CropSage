@@ -1,48 +1,63 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+  getCrops,
+  addCrop,
+  updateCrop,
+  deleteCrop,
+} from "../services/cropService";
 
 const CropContext = createContext();
 
-const initialCrops = [
-  {
-    id: 1,
-    name: "Wheat",
-    quantity: 500,
-    unit: "kg",
-    location: "Dehradun",
-    price: 28,
-    season: "Rabi",
-    status: "Growing",
-    notes: "",
-  },
-  {
-    id: 2,
-    name: "Rice",
-    quantity: 750,
-    unit: "kg",
-    location: "Haridwar",
-    price: 36,
-    season: "Kharif",
-    status: "Planned",
-    notes: "",
-  },
-  {
-    id: 3,
-    name: "Maize",
-    quantity: 200,
-    unit: "kg",
-    location: "Roorkee",
-    price: 24,
-    season: "Kharif",
-    status: "Harvested",
-    notes: "",
-  },
-];
-
 export function CropProvider({ children }) {
-  const [crops, setCrops] = useState(initialCrops);
+  const [crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all crops when the app loads
+  useEffect(() => {
+    fetchCrops();
+  }, []);
+
+  const fetchCrops = async () => {
+    try {
+      const res = await getCrops();
+      setCrops(res.data);
+    } catch (error) {
+      console.error("Error fetching crops:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createCrop = async (crop) => {
+    const res = await addCrop(crop);
+    setCrops((prev) => [...prev, res.data]);
+  };
+
+  const editCrop = async (id, crop) => {
+    const res = await updateCrop(id, crop);
+
+    setCrops((prev) =>
+      prev.map((item) => (item._id === id ? res.data : item))
+    );
+  };
+
+  const removeCrop = async (id) => {
+    await deleteCrop(id);
+
+    setCrops((prev) => prev.filter((item) => item._id !== id));
+  };
 
   return (
-    <CropContext.Provider value={{ crops, setCrops }}>
+    <CropContext.Provider
+      value={{
+        crops,
+        loading,
+        fetchCrops,
+        createCrop,
+        editCrop,
+        removeCrop,
+      }}
+    >
       {children}
     </CropContext.Provider>
   );
