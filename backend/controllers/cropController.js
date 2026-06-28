@@ -24,13 +24,13 @@ exports.addCrop = async (req, res) => {
 exports.updateCrop = async (req, res) => {
     try {
         const updatedCrop = await Crop.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
+  req.params.id,
+  req.body,
+  {
+    returnDocument: "after",
+    runValidators: true,
+  }
+);
 
         if (!updatedCrop) {
             return res.status(404).json({
