@@ -4,20 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-
-const stats = [
-  { title: "Crops", value: "7", info: "3 Recommended" },
-  { title: "Market Alerts", value: "12", info: "4 New" },
-  { title: "Profit", value: "₹2.8L", info: "This Season" },
-  { title: "Weather Risk", value: "Medium", info: "Next 7 Days" },
-];
-
-const crops = [
-  { name: "Groundnut", area: "2.5 Acres", score: 94 },
-  { name: "Soybean", area: "1.8 Acres", score: 88 },
-  { name: "Turmeric", area: "0.7 Acres", score: 81 },
-  { name: "Cotton", area: "2.0 Acres", score: 74 },
-];
+import { useCrops } from "../context/CropContext";
 
 const alerts = [
   {
@@ -40,14 +27,51 @@ const alerts = [
   },
 ];
 
-// Helper to handle active styling for NavLink
 const getNavLinkClass = ({ isActive }) =>
   `${styles.menuLink} ${isActive ? styles.active : ""}`;
 
 function Dashboard() {
-  // Moved hook calls safely above the return statement
   const { theme } = useTheme();
   const darkMode = theme === "dark";
+
+  // Shared crop data from context
+  const { crops } = useCrops();
+
+  // Dashboard statistics
+  const totalQuantity = crops.reduce(
+    (sum, crop) => sum + crop.quantity,
+    0
+  );
+
+  const estimatedValue = crops.reduce(
+    (sum, crop) => sum + crop.quantity * crop.price,
+    0
+  );
+
+  const locations = new Set(crops.map((c) => c.location)).size;
+
+  const stats = [
+    {
+      title: "Total Crops",
+      value: crops.length,
+      info: "Active Crops",
+    },
+    {
+      title: "Total Quantity",
+      value: `${totalQuantity} kg`,
+      info: "Inventory",
+    },
+    {
+      title: "Estimated Value",
+      value: `₹${estimatedValue.toLocaleString()}`,
+      info: "Market Value",
+    },
+    {
+      title: "Locations",
+      value: locations,
+      info: "Farm Locations",
+    },
+  ];
 
   return (
     <>
@@ -58,6 +82,7 @@ function Dashboard() {
           darkMode ? styles.darkMode : ""
         }`}
       >
+        {/* Sidebar */}
         <aside className={styles.sidebar}>
           <div>
             <h3 className={styles.sidebarTitle}>Navigation</h3>
@@ -101,9 +126,9 @@ function Dashboard() {
             </ul>
           </div>
 
-          {/* Bottom Profile */}
           <div className={styles.profile}>
             <div className={styles.avatar}>RP</div>
+
             <div className={styles.profileInfo}>
               <h4>Ramesh P.</h4>
               <p>Anand, GJ</p>
@@ -111,12 +136,14 @@ function Dashboard() {
           </div>
         </aside>
 
+        {/* Main Dashboard */}
         <section className={styles.dashboard}>
           <div className={styles.welcome}>
             <h1>Good Morning, Ramesh 👋</h1>
             <p>Kharif Season • Saturday, 21 June 2026</p>
           </div>
 
+          {/* Statistics */}
           <section className={styles.stats}>
             {stats.map((item) => (
               <div className={styles.statCard} key={item.title}>
@@ -128,37 +155,67 @@ function Dashboard() {
           </section>
 
           <section className={styles.grid}>
-            {/* Left Column */}
             <div>
               <div className={styles.card}>
-                <h3>Recommended Crops</h3>
+                <h3>Crop Inventory</h3>
+                                {crops.length === 0 ? (
+                  <p>No crops added yet.</p>
+                ) : (
+                  crops.map((crop) => (
+                    <div className={styles.crop} key={crop.id}>
+                      <div>
+                        <h4>{crop.name}</h4>
+                        <p>
+                          {crop.location} • {crop.season}
+                        </p>
+                      </div>
 
-                {crops.map((crop) => (
-                  <div className={styles.crop} key={crop.name}>
-                    <div>
-                      <h4>{crop.name}</h4>
-                      <p>{crop.area}</p>
+                      <div className={styles.progress}>
+                        <div
+                          className={styles.fill}
+                          style={{
+                            width: `${Math.min(
+                              (crop.quantity / totalQuantity) * 100,
+                              100
+                            )}%`,
+                          }}
+                        />
+                      </div>
+
+                      <strong>
+                        {crop.quantity} {crop.unit}
+                      </strong>
                     </div>
-
-                    <div className={styles.progress}>
-                      <div
-                        className={styles.fill}
-                        style={{ width: `${crop.score}%` }}
-                      ></div>
-                    </div>
-
-                    <strong>{crop.score}%</strong>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               <div className={styles.card}>
-                <h3>Market Price Trend</h3>
-                <div className={styles.chart}>Chart.js / Recharts</div>
+                <h3>Market Summary</h3>
+
+                <div className={styles.chart}>
+                  <h2>₹{estimatedValue.toLocaleString()}</h2>
+                  <p>Estimated Total Crop Value</p>
+
+                  <hr style={{ margin: "20px 0" }} />
+
+                  <p>
+                    <strong>Total Quantity:</strong> {totalQuantity} kg
+                  </p>
+
+                  <p>
+                    <strong>Total Locations:</strong> {locations}
+                  </p>
+
+                  <p>
+                    <strong>Registered Crops:</strong> {crops.length}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Right Column */}
+
             <div>
               <div className={styles.card}>
                 <h3>Weather Alerts</h3>
@@ -167,13 +224,53 @@ function Dashboard() {
                   <div className={styles.alert} key={alert.title}>
                     <div className={styles.top}>
                       <strong>{alert.title}</strong>
+
                       <span>{alert.level}</span>
                     </div>
 
                     <small>{alert.date}</small>
+
                     <p>{alert.advice}</p>
                   </div>
                 ))}
+              </div>
+
+              <div className={styles.card}>
+                <h3>Recent Crops</h3>
+
+                {crops
+                  .slice()
+                  .reverse()
+                  .slice(0, 5)
+                  .map((crop) => (
+                    <div
+                      key={crop.id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "10px 0",
+                        borderBottom: "1px solid #eee",
+                      }}
+                    >
+                      <div>
+                        <strong>{crop.name}</strong>
+
+                        <p style={{ margin: 0 }}>
+                          {crop.location}
+                        </p>
+                      </div>
+
+                      <div style={{ textAlign: "right" }}>
+                        <strong>
+                          {crop.quantity} {crop.unit}
+                        </strong>
+
+                        <p style={{ margin: 0 }}>
+                          ₹{crop.price}/kg
+                        </p>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
           </section>
