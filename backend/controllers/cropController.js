@@ -1,74 +1,117 @@
-const Crop = require("../models/Crop");
+const Crop = require("../models/crop");
 
+// GET ALL CROPS
 exports.getCrops = async (req, res) => {
-    const crops = await Crop.find();
-
-    res.status(200).json(crops);
-};
-
-exports.getCropById = async (req, res) => {
-
-    const crop = await Crop.findById(req.params.id);
-
-    if (!crop) {
-        return res.status(404).json({
-            message: "Crop not found"
-        });
+    try {
+        const crops = await Crop.find();
+        res.json(crops);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-
-    res.status(200).json(crop);
 };
 
-exports.createCrop = async (req, res) => {
-
-    const crop = await Crop.create(req.body);
-
-    res.status(201).json(crop);
+// ADD CROP
+exports.addCrop = async (req, res) => {
+    try {
+        const newCrop = await Crop.create(req.body);
+        res.status(201).json(newCrop);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 };
 
+// UPDATE CROP
 exports.updateCrop = async (req, res) => {
+    try {
+        const updatedCrop = await Crop.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
 
-    const crop = await Crop.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
-
-    if (!crop) {
-        return res.status(404).json({
-            message: "Crop not found"
-        });
-    }
-
-    res.status(200).json(crop);
-};
-
-exports.deleteCrop = async (req, res) => {
-
-    const crop = await Crop.findByIdAndDelete(req.params.id);
-
-    if (!crop) {
-        return res.status(404).json({
-            message: "Crop not found"
-        });
-    }
-
-    res.status(200).json({
-        message: "Crop deleted successfully"
-    });
-};
-
-exports.searchCrops = async (req, res) => {
-
-    const name = req.query.name;
-
-    const crops = await Crop.find({
-        name: {
-            $regex: name,
-            $options: "i"
+        if (!updatedCrop) {
+            return res.status(404).json({
+                message: "Crop not found",
+            });
         }
-    });
 
-    res.status(200).json(crops);
+        res.json(updatedCrop);
+    } catch (err) {
+        res.status(400).json({
+            message: err.message,
+        });
+    }
 };
 
+// DELETE CROP
+exports.deleteCrop = async (req, res) => {
+    try {
+        const deletedCrop = await Crop.findByIdAndDelete(req.params.id);
+
+        if (!deletedCrop) {
+            return res.status(404).json({
+                message: "Crop not found",
+            });
+        }
+
+        res.json({
+            message: "Crop deleted successfully",
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+        });
+    }
+};
+
+// GET SINGLE CROP
+exports.getCropById = async (req, res) => {
+    try {
+        const crop = await Crop.findById(req.params.id);
+
+        if (!crop) {
+            return res.status(404).json({
+                message: "Crop not found",
+            });
+        }
+
+        res.json(crop);
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+        });
+    }
+};
+
+// GET CROPS BY SEASON
+exports.getCropsBySeason = async (req, res) => {
+    try {
+        const crops = await Crop.find({
+            season: req.params.season
+        });
+
+        res.json(crops);
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};
+
+
+exports.getCropsByLocation = async (req, res) => {
+    try {
+        const { location } = req.query;
+
+        const crops = await Crop.find({ location });
+
+        res.json(crops);
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};

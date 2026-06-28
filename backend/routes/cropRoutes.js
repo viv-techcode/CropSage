@@ -1,18 +1,31 @@
 const express = require("express");
+
 const router = express.Router();
 
-const cropController = require("../controllers/cropController");
+const {
+    getCrops,
+    getCropById,
+    getCropsByLocation,
+    getCropsBySeason,
+    addCrop,
+    updateCrop,
+    deleteCrop
+} = require("../controllers/cropController");
 
-router.get("/", cropController.getCrops);
+router.get("/", getCrops);
 
-router.get("/search", cropController.searchCrops);
+router.get("/search/location", getCropsByLocation);
 
-router.get("/:id", cropController.getCropById);
+router.get("/season/:season", getCropsBySeason);
 
-router.post("/", cropController.createCrop);
+router.get("/:id", getCropById);
 
-router.put("/:id", cropController.updateCrop);
+router.post("/", addCrop);
 
-router.delete("/:id", cropController.deleteCrop);
+router.put("/:id", updateCrop);
+
+router.delete("/:id", deleteCrop);
+
+
 
 module.exports = router;
