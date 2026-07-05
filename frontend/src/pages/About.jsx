@@ -14,9 +14,8 @@ import {
 
 function About() {
   const { theme } = useTheme();
-const darkMode = theme === "dark";
+  const darkMode = theme === "dark";
 
-console.log("About Theme:", theme);
   const features = [
     {
       icon: <FaSeedling />,
@@ -78,40 +77,46 @@ console.log("About Theme:", theme);
   ];
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <Navbar />
-      
-      
 
-      {/* Main Content Wrapper */}
-      <div className="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300">
+      <div className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-500 selection:bg-emerald-500 selection:text-white">
         
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-green-700 to-emerald-600 dark:from-emerald-900 dark:to-teal-950 text-white py-20 transition-all duration-300">
-          <div className="max-w-7xl mx-auto px-6 text-center">
-            <h1 className="text-5xl font-bold mb-4">About CropSage</h1>
-            <p className="text-xl max-w-3xl mx-auto text-green-50 dark:text-emerald-200">
-              Farming decisions, backed by data — not guesswork.
+        <section className="relative overflow-hidden bg-gradient-to-br from-green-800 via-emerald-700 to-teal-800 dark:from-slate-900 dark:via-emerald-950 dark:to-teal-950 text-white py-28 px-6 transition-all duration-500">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.1),transparent)] pointer-events-none" />
+          <div className="max-w-5xl mx-auto text-center relative z-10 animate-fade-in">
+            <span className="inline-block text-xs font-semibold tracking-widest uppercase bg-white/10 dark:bg-emerald-500/20 text-emerald-200 backdrop-blur-md px-4 py-1.5 rounded-full mb-6 border border-white/15 dark:border-emerald-500/30 shadow-inner">
+              Empowering Agriculture
+            </span>
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-r from-white via-slate-100 to-emerald-200 bg-clip-text text-transparent">
+              About CropSage
+            </h1>
+            <p className="text-xl md:text-2xl max-w-2xl mx-auto text-emerald-50/80 font-light leading-relaxed">
+              Farming decisions, backed by data — <span className="font-medium text-emerald-200">not guesswork.</span>
             </p>
           </div>
         </section>
-        
 
-        {/* Intro Section */}
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-green-700 dark:text-emerald-400">What We Do</h2>
-              <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
+            <div className="group bg-white dark:bg-slate-900/60 backdrop-blur-md p-8 lg:p-10 rounded-3xl border border-slate-200/60 dark:border-slate-800/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.1)] transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl mb-6 shadow-md shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300" />
+              <h2 className="text-3xl font-bold mb-4 tracking-tight text-green-700 dark:text-emerald-400">
+                What We Do
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-light">
                 CropSage transforms weather forecasts, soil conditions, and
                 market intelligence into clear, practical recommendations that
                 help farmers make better decisions throughout the season.
               </p>
             </div>
 
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-green-700 dark:text-emerald-400">Why It Matters</h2>
-              <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">
+            <div className="group bg-white dark:bg-slate-900/60 backdrop-blur-md p-8 lg:p-10 rounded-3xl border border-slate-200/60 dark:border-slate-800/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.1)] transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xl mb-6 shadow-md shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300" />
+              <h2 className="text-3xl font-bold mb-4 tracking-tight text-green-700 dark:text-emerald-400">
+                Why It Matters
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-light">
                 Many crop losses happen because critical decisions are made with
                 limited information. CropSage helps bridge that gap by putting
                 reliable insights directly into farmers' hands.
@@ -120,66 +125,60 @@ console.log("About Theme:", theme);
           </div>
         </section>
 
-        {/* Who it's for */}
-        <section className="bg-white dark:bg-slate-800/50 py-20 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
+        <section className="bg-gradient-to-b from-slate-100/70 to-white dark:from-slate-900/40 dark:to-transparent py-24 border-y border-slate-200/50 dark:border-slate-900 transition-colors duration-500">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-4 text-slate-800 dark:text-white">
+            <h2 className="text-4xl font-extrabold text-center tracking-tight mb-4 text-slate-800 dark:text-white">
               Who It's For
             </h2>
-
-            <p className="text-center text-gray-600 dark:text-slate-300 max-w-3xl mx-auto mb-12">
+            <p className="text-center text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-16 text-lg font-light leading-relaxed">
               Built for the realities of rural and semi-urban farming — low
-              connectivity, mixed literacy levels, and decisions that cannot
-              wait.
+              connectivity, mixed literacy levels, and decisions that cannot wait.
             </p>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {users.map((user, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-black/30 border border-transparent dark:border-slate-700/50 transition-all"
+                  className="group relative overflow-hidden bg-white/70 dark:bg-slate-900/40 backdrop-blur-sm rounded-3xl p-6 border border-slate-200/60 dark:border-slate-800/60 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_32px_-10px_rgba(0,0,0,0.08)] dark:hover:shadow-black/30 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="text-3xl text-green-600 dark:text-emerald-400 mb-4">
+                  <div className="text-2xl text-emerald-600 dark:text-emerald-400 mb-5 bg-emerald-50 dark:bg-emerald-950/50 w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white dark:group-hover:bg-emerald-500 transition-all duration-300">
                     {user.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-100">
+                  <h3 className="text-xl font-bold mb-3 text-slate-800 dark:text-slate-100 tracking-tight">
                     {user.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-slate-300">{user.description}</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-light">
+                    {user.description}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Features / Tools Section */}
-        <section className="py-20">
+        <section className="py-24 relative">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-4 text-slate-800 dark:text-white">
+            <h2 className="text-4xl font-extrabold text-center tracking-tight mb-4 text-slate-800 dark:text-white">
               Five Tools. One Smarter Growing Season.
             </h2>
-
-            <p className="text-center text-gray-600 dark:text-slate-300 max-w-3xl mx-auto mb-14">
+            <p className="text-center text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-16 text-lg font-light leading-relaxed">
               From crop selection to harvest planning, CropSage combines
-              intelligent recommendations, market insights, and weather awareness
-              into one unified farming platform.
+              intelligent recommendations, market insights, and weather awareness into one unified farming platform.
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-black/20 p-8 border border-transparent dark:border-slate-700/50 hover:shadow-lg dark:hover:shadow-black/40 transition-all"
+                  className="group bg-white dark:bg-slate-900/50 backdrop-blur-md rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)] dark:shadow-none p-8 border border-slate-100 dark:border-slate-800/80 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.08)] dark:hover:shadow-black/40 transition-all duration-300 hover:-translate-y-1.5"
                 >
-                  <div className="text-4xl text-green-600 dark:text-emerald-400 mb-4">
+                  <div className="text-3xl text-emerald-600 dark:text-emerald-400 mb-6 bg-slate-50 dark:bg-slate-950 w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
-
-                  <h3 className="text-2xl font-semibold mb-3 text-slate-800 dark:text-slate-100">
+                  <h3 className="text-2xl font-bold mb-3 text-slate-800 dark:text-slate-100 tracking-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors duration-200">
                     {feature.title}
                   </h3>
-
-                  <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
                     {feature.description}
                   </p>
                 </div>
@@ -188,28 +187,29 @@ console.log("About Theme:", theme);
           </div>
         </section>
 
-        {/* Quote Section */}
-        <section className="bg-green-700 dark:bg-emerald-900 text-white py-20 transition-colors duration-300">
-          <div className="max-w-4xl mx-auto px-6 text-center">
-            <blockquote className="text-3xl font-medium leading-relaxed italic">
+        <section className="relative overflow-hidden bg-gradient-to-tr from-emerald-800 to-green-700 dark:from-emerald-950 dark:to-slate-900 text-white py-24 px-6 transition-colors duration-500">
+          <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-[2px] pointer-events-none" />
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <span className="text-4xl text-emerald-300/40 font-serif block mb-2 pointer-events-none select-none">“</span>
+            <blockquote className="text-2xl md:text-3xl font-light leading-relaxed italic tracking-wide text-emerald-50">
               "Every season brings critical decisions. CropSage helps farmers make 
               them with confidence through data-driven insights, market intelligence, 
               and timely guidance."
             </blockquote>
-
-            <p className="mt-6 text-green-100 dark:text-emerald-200 text-lg">
+            <p className="mt-6 text-emerald-300 font-semibold uppercase tracking-wider text-sm">
               — The CropSage Team
             </p>
           </div>
         </section>
 
-        {/* Closing Title Wrapper */}
-        <section className="py-20 text-center max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-4 text-green-700 dark:text-emerald-400">
+        <section className="py-24 text-center max-w-4xl mx-auto px-6">
+          <div className="inline-block p-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 mb-6 shadow-inner">
+            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+          </div>
+          <h2 className="text-4xl font-extrabold mb-4 tracking-tight text-green-700 dark:text-emerald-400">
             CropSage
           </h2>
-
-          <p className="text-xl text-gray-600 dark:text-slate-300">
+          <p className="text-xl text-slate-500 dark:text-slate-400 font-light">
             AI-powered farming for smarter agricultural decisions.
           </p>
         </section>
