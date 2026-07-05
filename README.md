@@ -41,7 +41,7 @@ The Crop collection stores information about each crop managed by the applicatio
 
 ### Schema Diagram
 
-![alt text](W5_SchemaDiagram_26100553.png)
+![alt text](frontend/public/schemadiagram.png)
 ---
 
 ## Set Up the Database

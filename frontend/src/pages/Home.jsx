@@ -12,15 +12,12 @@ function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/40 border-b border-slate-200/60 dark:border-slate-900 py-24 lg:py-32">
-          {/* Subtle Background Glow */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
           
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               
-              {/* Left Content */}
               <div className="animate-fade-in">
                 <div className="inline-flex items-center gap-2.5 rounded-full border border-green-200 bg-green-50/80 dark:border-emerald-800/60 dark:bg-emerald-950/30 backdrop-blur-sm px-4 py-2 text-xs font-semibold uppercase tracking-widest text-green-700 dark:text-emerald-400 shadow-sm">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -57,7 +54,6 @@ function Home() {
                 </div>
               </div>
 
-              {/* Right Visual Frame */}
               <div className="relative group lg:ml-4">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-green-600 rounded-[2rem] blur-2xl opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-500 pointer-events-none" />
                 
@@ -69,7 +65,6 @@ function Home() {
                   />
                 </div>
 
-                {/* Floating Soft UI Badge */}
                 <div className="absolute -bottom-6 left-6 right-6 sm:right-auto sm:w-80 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/80 p-5 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] dark:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
                   <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">AI Recommendation</p>
                   <h3 className="mt-1.5 text-xl font-extrabold text-green-700 dark:text-emerald-400 tracking-tight flex items-center gap-1.5">
@@ -85,7 +80,6 @@ function Home() {
           </div>
         </section>
 
-        {/* Features Grid */}
         <section className="max-w-7xl mx-auto px-6 py-28">
           <div className="mb-16 text-center sm:text-left">
             <span className="text-xs font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-md">Capabilities</span>
@@ -94,7 +88,6 @@ function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Native Tailwind styling mapping onto custom Card components if wrapped nicely, or styled uniformly */}
             <div className="hover:-translate-y-1.5 transition-transform duration-300">
               <Card
                 title="Smart Crop Planner"
@@ -126,7 +119,6 @@ function Home() {
               />
             </div>
 
-            {/* Premium Call-To-Action Glass Card */}
             <div className="relative overflow-hidden bg-gradient-to-br from-green-700 via-emerald-700 to-teal-800 dark:from-slate-900 dark:via-emerald-950 dark:to-teal-950 text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl shadow-emerald-900/10 dark:shadow-none hover:-translate-y-1.5 transition-transform duration-300 group">
               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
               <div>
@@ -149,7 +141,6 @@ function Home() {
           </div>
         </section>
 
-        {/* How It Works (Procedural Layout) */}
         <section className="bg-gradient-to-b from-slate-100/60 to-white dark:from-slate-900/30 dark:to-transparent border-y border-slate-200/50 dark:border-slate-900 py-24 transition-all duration-500">
           <div className="max-w-7xl mx-auto px-6">
             <h2 className="text-4xl font-extrabold text-center tracking-tight text-slate-800 dark:text-white mb-16">
@@ -191,7 +182,6 @@ function Home() {
           </div>
         </section>
 
-        {/* Testimonials */}
         <section className="max-w-7xl mx-auto px-6 py-28">
           <div className="mb-14 text-center md:text-left">
             <span className="text-xs font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-md">Impact</span>
