@@ -115,14 +115,11 @@ function AIAssistant() {
     }`}>
       <Navbar />
 
-      {/* Main Viewport Container */}
       <section className="flex flex-1 overflow-hidden relative">
         
-        {/* Decorative Ambient Soft Glow Backgrounds */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/10 dark:bg-green-500/5 rounded-full blur-[120px] pointer-events-none animate-pulse duration-[8000ms]" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Sidebar - Glassmorphic Styling */}
         <aside className={`w-72 p-5 border-r hidden md:flex flex-col relative z-10 backdrop-blur-md transition-colors duration-300 ${
           darkMode 
             ? "bg-slate-900/60 border-slate-800/80 shadow-[inset_-1px_0_0_0_rgba(255,255,255,0.05)]" 
@@ -153,7 +150,6 @@ function AIAssistant() {
                     : "text-slate-600 hover:text-green-700 hover:bg-green-50/60"
                 }`}
               >
-                {/* Active/Hover line marker micro-interaction */}
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-green-500 rounded-r transition-all duration-300 group-hover:h-1/2" />
                 <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1 inline-block">
                   {topic.label}
@@ -163,10 +159,8 @@ function AIAssistant() {
           </div>
         </aside>
 
-        {/* Chat Area */}
         <main className="flex flex-1 flex-col h-full overflow-hidden relative z-10">
           
-          {/* Header - Glassmorphic Blur */}
           <div className={`flex justify-between items-center px-6 py-4 border-b backdrop-blur-md transition-colors duration-300 ${
             darkMode ? "bg-slate-900/60 border-slate-800/80" : "bg-white/60 border-slate-200/80"
           }`}>
@@ -191,7 +185,6 @@ function AIAssistant() {
             </p>
           </div>
 
-          {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
             {messages.map((msg) => (
               <div
@@ -214,7 +207,6 @@ function AIAssistant() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Prompt Suggestions - Horizontal Scrolling Micro-chips */}
           <div className="px-6 py-2.5 flex gap-2 overflow-x-auto no-scrollbar mask-image-edges">
             {[
               { text: "🍁 Kharif crops", key: "Kharif crops" },
@@ -236,7 +228,6 @@ function AIAssistant() {
             ))}
           </div>
 
-          {/* Form Input Container */}
           <div className={`p-4 border-t transition-colors duration-300 ${
             darkMode ? "bg-slate-950/40 border-slate-800/80" : "bg-slate-50/40 border-slate-200/80"
           }`}>

@@ -8,7 +8,7 @@ function Navbar() {
   return (
     <nav className="flex flex-col md:flex-row justify-between items-center px-4 py-5 bg-green-600 text-white">
 
-      {/* Logo + Brand */}
+     
       <Link
         to="/"
         className="flex items-center gap-3 mb-4 md:mb-0 group"
@@ -25,7 +25,7 @@ function Navbar() {
         </h1>
       </Link>
 
-      {/* Navigation Links */}
+      
       <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-lg md:text-xl font-medium">
         <Link to="/" className="hover:text-green-200 transition-colors">Home</Link>
         <Link to="/about" className="hover:text-green-200 transition-colors">About</Link>
@@ -34,7 +34,7 @@ function Navbar() {
         <Link to="/login" className="hover:text-green-200 transition-colors">Login</Link>
         <Link to="/components" className="hover:text-green-200 transition-colors">Components</Link>
 
-        {/* Theme Toggle Button */}
+        
         <button
           onClick={toggleTheme}
           className="p-2 border border-transparent rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center justify-center"
