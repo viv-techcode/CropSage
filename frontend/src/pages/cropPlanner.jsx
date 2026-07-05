@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import Navbar from "../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useCrops } from "../context/CropContext";
 import {
@@ -10,7 +11,6 @@ import {
   Package,
   IndianRupee,
   LayoutDashboard,
-  Sprout,
 } from "lucide-react";
 
 const emptyCrop = {
@@ -109,28 +109,8 @@ export default function CropPlanner() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <nav className="bg-green-700 text-white shadow">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Sprout size={30} />
-            <h1 className="text-2xl font-bold">CropSage</h1>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link to="/" className="hover:text-green-200">
-              Home
-            </Link>
-            <Link to="/dashboard" className="hover:text-green-200">
-              Dashboard
-            </Link>
-            <Link to="/crop-planner" className="font-semibold border-b-2 border-white">
-              Crop Planner
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
+      <Navbar />
 
       <div className="max-w-7xl mx-auto p-8">
         {/* Header */}

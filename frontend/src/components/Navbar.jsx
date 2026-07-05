@@ -7,18 +7,28 @@ function Navbar() {
 
   return (
     <nav className="flex flex-col md:flex-row justify-between items-center px-4 py-5 bg-green-600 text-white">
-      <h1 className="text-3xl font-bold mb-4 md:mb-0">
-        CropSage
-      </h1>
 
+      {/* Logo + Brand */}
+      <Link
+        to="/"
+        className="flex items-center gap-3 mb-4 md:mb-0"
+      >
+        <img
+          src="/icon.png"
+          alt="CropSage Logo"
+          className="w-10 h-10 object-contain"
+        />
+        <h1 className="text-3xl font-bold text-white">
+          CropSage
+        </h1>
+      </Link>
+
+      {/* Navigation Links */}
       <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-lg md:text-xl font-medium">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/dashboard">Dashboard</Link>
-
-        {/* New AI Assistant link */}
         <Link to="/ai-assistant">AI Assistant</Link>
-
         <Link to="/login">Login</Link>
         <Link to="/components">Components</Link>
 
@@ -33,6 +43,7 @@ function Navbar() {
           )}
         </button>
       </div>
+
     </nav>
   );
 }

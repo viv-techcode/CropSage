@@ -1,8 +1,12 @@
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300">
       <Navbar />
@@ -37,13 +41,19 @@ function Home() {
 
                 <div className="mt-10 flex flex-wrap gap-4">
 
-                  <button className="rounded-lg bg-green-700 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-500">
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className="rounded-lg bg-green-700 px-6 py-3 font-semibold text-white transition hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 shadow-md"
+                  >
                     View Dashboard
                   </button>
 
-                  <button className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-semibold text-gray-800 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800">
+                  <Link
+                    to="/login"
+                    className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-semibold text-gray-800 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+                  >
                     Sign Up Free
-                  </button>
+                  </Link>
 
                 </div>
 
@@ -55,7 +65,7 @@ function Home() {
                 <div className="overflow-hidden rounded-3xl shadow-2xl">
 
                   <img
-                    src="/images/hero-farm.jpg"
+                    src="/images.jpg"
                     alt="CropSage Agriculture"
                     className="h-[450px] w-full object-cover"
                   />
@@ -125,9 +135,12 @@ function Home() {
                 </p>
               </div>
 
-              <button className="mt-6 bg-white dark:bg-gray-900 text-green-700 dark:text-green-400 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+              <Link
+                to="/login"
+                className="mt-6 inline-block bg-white dark:bg-gray-900 text-green-700 dark:text-green-400 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 text-center"
+              >
                 Create Free Account →
-              </button>
+              </Link>
             </div>
           </div>
         </section>
