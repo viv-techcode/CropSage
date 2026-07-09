@@ -7,11 +7,23 @@ import { useTheme } from "../context/ThemeContext";
 function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    mobile: "",
+    password: "",
+  });
 
   const { theme } = useTheme();
+  const darkMode = theme === "dark";
 
-const darkMode = theme === "dark";
-  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div
@@ -20,7 +32,6 @@ const darkMode = theme === "dark";
       }`}
     >
       <Navbar />
-      
 
       <main
         className={`relative flex-1 flex items-center justify-center px-4 py-8 md:py-12 overflow-hidden transition-all duration-500 ${
@@ -29,7 +40,6 @@ const darkMode = theme === "dark";
             : "bg-gradient-to-br from-green-50 via-white to-emerald-100"
         }`}
       >
-        {/* Glow Effects */}
         <div
           className={`absolute top-20 left-20 w-72 h-72 rounded-full blur-3xl ${
             darkMode ? "bg-emerald-500/10" : "bg-green-400/30"
@@ -42,13 +52,11 @@ const darkMode = theme === "dark";
           }`}
         />
 
-        {/* Main Card */}
         <div
           className={`relative z-10 w-full max-w-6xl overflow-hidden rounded-3xl shadow-2xl grid md:grid-cols-2 border transition-all duration-500 ${
             darkMode ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200"
           }`}
         >
-          {/* Form Section */}
           <div
             className={`flex items-center justify-center p-6 sm:p-8 md:p-12 order-first md:order-last ${
               darkMode
@@ -61,9 +69,9 @@ const darkMode = theme === "dark";
                 darkMode ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200 shadow-md"
               }`}
             >
-              {/* Tabs */}
               <div className={`flex p-1 rounded-2xl mb-6 ${darkMode ? "bg-slate-800" : "bg-slate-100"}`}>
                 <button
+                  type="button"
                   onClick={() => setIsSignUp(false)}
                   className={`flex-1 py-2.5 rounded-xl text-sm font-medium ${
                     !isSignUp
@@ -77,6 +85,7 @@ const darkMode = theme === "dark";
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setIsSignUp(true)}
                   className={`flex-1 py-2.5 rounded-xl text-sm font-medium ${
                     isSignUp
@@ -98,10 +107,13 @@ const darkMode = theme === "dark";
                 {isSignUp ? "Join CropSage today." : "Login to continue."}
               </p>
 
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 {isSignUp && (
                   <input
                     type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
                     placeholder="Full Name"
                     className={`w-full rounded-xl px-4 py-3 border ${
                       darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
@@ -111,6 +123,9 @@ const darkMode = theme === "dark";
 
                 <input
                   type="tel"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
                   placeholder="Mobile Number"
                   className={`w-full rounded-xl px-4 py-3 border ${
                     darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
@@ -120,6 +135,9 @@ const darkMode = theme === "dark";
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                     placeholder="Password"
                     className={`w-full rounded-xl px-4 py-3 pr-12 border ${
                       darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
@@ -129,26 +147,30 @@ const darkMode = theme === "dark";
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
 
-                <button className="w-full py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold">
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold shadow-lg shadow-green-600/20 hover:opacity-90 active:scale-[0.98] transition-transform"
+                >
                   {isSignUp ? "Sign Up" : "Login"}
                 </button>
               </form>
 
               <div className="flex items-center gap-4 my-5">
-                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700"></div>
+                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700" />
                 <span className="text-xs text-slate-400">OR</span>
-                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700"></div>
+                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700" />
               </div>
 
               <button
-                className={`w-full py-3 rounded-xl border flex items-center justify-center gap-2 ${
-                  darkMode ? "border-slate-700 bg-slate-800" : "border-slate-200 bg-slate-50"
+                type="button"
+                className={`w-full py-3 rounded-xl border flex items-center justify-center gap-2 font-medium active:scale-[0.98] transition-transform ${
+                  darkMode ? "border-slate-700 bg-slate-800 hover:bg-slate-750" : "border-slate-200 bg-slate-50 hover:bg-slate-100"
                 }`}
               >
                 <FaGoogle />
@@ -157,14 +179,13 @@ const darkMode = theme === "dark";
             </div>
           </div>
 
-          {/* Marketing Section */}
           <div
             className={`p-10 flex flex-col justify-center transition-all duration-500 ${
               darkMode ? "bg-slate-950 text-white" : "bg-gradient-to-br from-green-700 to-emerald-800 text-white"
             }`}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 w-fit">
-              <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 w-fit text-sm font-medium">
+              <span className="w-2 h-2 bg-green-400 rounded-full" />
               AI-Powered Agriculture
             </span>
 
@@ -205,7 +226,7 @@ const darkMode = theme === "dark";
               </div>
             </div>
           </div>
-        </div> {/* Form Section & Marketing Section are now correctly enclosed inside Main Card */}
+        </div>
       </main>
 
       <Footer />
