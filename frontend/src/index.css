@@ -140,3 +140,46 @@ button {
   transform-origin: 70% 70%;
   animation: waveHand 1.8s ease-in-out infinite;
 }
+
+@keyframes accessCountdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.access-countdown-bar {
+  transform-origin: left center;
+  animation: accessCountdown 5s linear forwards;
+}
+
+@keyframes bubbleFloatA {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(18px, -22px, 0) scale(1.05); }
+  50% { transform: translate3d(34px, 10px, 0) scale(1.08); }
+  75% { transform: translate3d(12px, 28px, 0) scale(1.03); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes bubbleFloatB {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  20% { transform: translate3d(-16px, 20px, 0) scale(1.04); }
+  55% { transform: translate3d(-34px, -12px, 0) scale(1.09); }
+  80% { transform: translate3d(-8px, -30px, 0) scale(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.bubble-orb {
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform;
+}
+
+.animate-bubble-one { animation: bubbleFloatA 9s infinite ease-in-out; }
+.animate-bubble-two { animation: bubbleFloatB 11s infinite ease-in-out; }
+.animate-bubble-three { animation: bubbleFloatA 13s infinite ease-in-out; }
+.animate-bubble-four { animation: bubbleFloatB 10s infinite ease-in-out; }
+.animate-bubble-five { animation: bubbleFloatA 12s infinite ease-in-out; }
+.animate-bubble-six { animation: bubbleFloatB 14s infinite ease-in-out; }
