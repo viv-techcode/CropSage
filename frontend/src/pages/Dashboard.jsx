@@ -1,9 +1,10 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useCrops } from "../context/CropContext";
+import { useAuth } from "../context/AuthContext"; 
 import { 
   LayoutDashboard, 
   Sprout, 
@@ -52,6 +53,18 @@ function Dashboard() {
   const darkMode = theme === "dark";
 
   const { crops, loading } = useCrops();
+  const { user } = useAuth(); 
+  const navigate = useNavigate(); 
+
+  const userName = user?.name || "Farmer";
+  const userLocation = user?.location || "India";
+  
+  const userInitials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const totalQuantity = crops ? crops.reduce((sum, crop) => sum + crop.quantity, 0) : 0;
   const estimatedValue = crops ? crops.reduce((sum, crop) => sum + crop.quantity * crop.price, 0) : 0;
@@ -128,13 +141,21 @@ function Dashboard() {
             </ul>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-200/50 dark:border-white/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
-              RP
+          
+          <div 
+            onClick={() => navigate("/profile")}
+            className="mt-8 pt-6 border-t border-slate-200/50 dark:border-white/10 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 p-2 rounded-xl transition-all duration-200"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20 shrink-0">
+              {userInitials}
             </div>
             <div>
-              <h4 className="font-semibold text-sm leading-none text-slate-800 dark:text-slate-100">Ramesh P.</h4>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Anand, GJ</p>
+              <h4 className="font-semibold text-sm leading-none text-slate-800 dark:text-slate-100">
+                {userName}
+              </h4>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                {userLocation}
+              </p>
             </div>
           </div>
         </aside>
@@ -143,7 +164,7 @@ function Dashboard() {
           <div className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/10 backdrop-blur-sm">
             <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              Good Morning, Ramesh
+              Good Morning, {userName.split(" ")[0]}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
               Kharif Season • Saturday, 21 June 2026

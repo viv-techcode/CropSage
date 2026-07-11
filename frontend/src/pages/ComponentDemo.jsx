@@ -1,5 +1,11 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { 
+  Sprout, 
+  TrendingUp, 
+  CloudSun, 
+  Bot 
+} from "lucide-react";
 
 import {
   Button,
@@ -18,12 +24,16 @@ const ComponentDemo = () => {
       <Navbar />
 
       <div className="demo-container">
-        <h1>🌾 CropSage UI Library</h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Sprout size={32} /> CropSage UI Library
+        </h1>
         <p>AI-Powered Farming Platform</p>
 
         <div className="demo-grid">
           <div className="demo-card">
-            <h3>🌱 Smart Crop Planner</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sprout size={20} /> Smart Crop Planner
+            </h3>
 
             <Input placeholder="Enter your location..." />
 
@@ -36,7 +46,9 @@ const ComponentDemo = () => {
           </div>
 
           <div className="demo-card">
-            <h3>📈 Market Price Intelligence</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <TrendingUp size={20} /> Market Price Intelligence
+            </h3>
 
             <p>Check latest mandi prices and trends.</p>
 
@@ -46,13 +58,17 @@ const ComponentDemo = () => {
           </div>
 
           <div className="demo-card">
-            <h3>⛅ Weather Risk Alerts</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CloudSun size={20} /> Weather Risk Alerts
+            </h3>
 
             <Loader />
           </div>
 
           <div className="demo-card">
-            <h3>🤖 AI Farm Assistant</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Bot size={20} /> AI Farm Assistant
+            </h3>
 
             <p>
               Ask farming questions and receive AI-powered

@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AuthShell from "../components/AuthShell";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +32,7 @@ function Register() {
   });
 
   const { theme } = useTheme();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const darkMode = theme === "dark";
 
@@ -85,16 +87,17 @@ function Register() {
     try {
       setSubmitting(true);
 
-      await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await axios.post("http://localhost:5000/api/auth/register", {
         name: formData.name,
         email: formData.email,
         mobile: formData.mobile,
         password: formData.password,
       });
 
-      setSuccessMessage("Registration successful. Please sign in to continue.");
+      login(response.data.user, response.data.token);
+      setSuccessMessage("Registration successful. Complete your farm profile to continue.");
       setFormData({ name: "", email: "", mobile: "", password: "", confirmPassword: "" });
-      setTimeout(() => navigate("/login"), 1200);
+      setTimeout(() => navigate("/profile", { state: { onboarding: true } }), 800);
     } catch (err) {
       setErrors(prev => ({
         ...prev,

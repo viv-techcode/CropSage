@@ -15,13 +15,17 @@ exports.getCrops = async (req, res) => {
 // ADD CROP
 exports.addCrop = async (req, res) => {
     try {
-        const { cropName, quantity, season, location } = req.body;
+        const { cropName, quantity, unit, price, season, status, location, notes } = req.body;
 
         const crop = await Crop.create({
             cropName,
             quantity,
+            unit,
+            price,
             season,
+            status,
             location,
+            notes,
             user: req.user.id
         });
 

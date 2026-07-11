@@ -132,7 +132,7 @@ export default function CropPlanner() {
       setShowModal(false);
     } catch (err) {
       console.error(err);
-      triggerNotification("An error occurred while saving your crop changes.", "error");
+      triggerNotification(err.response?.data?.message || "An error occurred while saving your crop changes.", "error");
     }
   }, [editingCrop, editCrop, createCrop, triggerNotification]);
 

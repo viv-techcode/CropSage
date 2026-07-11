@@ -5,19 +5,16 @@ import {
   updateCrop,
   deleteCrop,
 } from "../services/cropService";
+import { useAuth } from "./AuthContext";
 
 const CropContext = createContext();
 
 export function CropProvider({ children }) {
+  const { token } = useAuth();
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all crops when the app loads
-  useEffect(() => {
-    fetchCrops();
-  }, []);
-
-  const fetchCrops = async () => {
+  async function fetchCrops() {
     try {
       const res = await getCrops();
       setCrops(res.data);
@@ -26,7 +23,18 @@ export function CropProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  // Fetch the current user's crops after authentication becomes available.
+  useEffect(() => {
+    if (!token) return undefined;
+
+    const loadTimer = window.setTimeout(() => {
+      fetchCrops();
+    }, 0);
+
+    return () => window.clearTimeout(loadTimer);
+  }, [token]);
 
   const createCrop = async (crop) => {
     const res = await addCrop(crop);
