@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Phone, ShieldCheck, UserRound } from "lucide-react";
@@ -11,7 +11,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -21,34 +20,67 @@ function Register() {
     confirmPassword: "",
   });
 
+  // Track errors for each field individually in real-time
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+    confirmPassword: "",
+    api: "",
+  });
+
   const { theme } = useTheme();
   const navigate = useNavigate();
   const darkMode = theme === "dark";
+
+  // Validate fields in real-time as the data changes
+  useEffect(() => {
+    const newErrors = { name: "", email: "", mobile: "", password: "", confirmPassword: "", api: "" };
+
+    if (formData.name && formData.name.trim().length < 3) {
+      newErrors.name = "Full name must be at least 3 characters long.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (formData.mobile && !/^[0-9]{10}$/.test(formData.mobile)) {
+      newErrors.mobile = "Please enter a valid 10-digit mobile number.";
+    }
+
+    if (formData.password) {
+      if (formData.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters long.";
+      } else if (formData.password.length > 20) {
+        newErrors.password = "Password cannot exceed 20 characters.";
+      }
+    }
+
+    if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setErrors(newErrors);
+  }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Check if there are any validation errors or empty required fields
+  const isFormInvalid = 
+    Object.values(errors).some(error => error !== "") || 
+    !formData.name || !formData.email || !formData.mobile || !formData.password || !formData.confirmPassword;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
+    if (isFormInvalid) return;
+
     setSuccessMessage("");
-
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Passwords do not match.");
-      return;
-    }
-
-    if (formData.name.trim().length < 3) {
-      setErrorMessage("Full name must be at least 3 characters long.");
-      return;
-    }
-
-    if (!/^[0-9]{10}$/.test(formData.mobile)) {
-      setErrorMessage("Please enter a valid 10-digit mobile number.");
-      return;
-    }
 
     try {
       setSubmitting(true);
@@ -64,7 +96,10 @@ function Register() {
       setFormData({ name: "", email: "", mobile: "", password: "", confirmPassword: "" });
       setTimeout(() => navigate("/login"), 1200);
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Something went wrong. Please try again.");
+      setErrors(prev => ({
+        ...prev,
+        api: err.response?.data?.message || "Something went wrong. Please try again."
+      }));
     } finally {
       setSubmitting(false);
     }
@@ -89,10 +124,11 @@ function Register() {
             </div>
           </div>
 
-          {errorMessage && <div className="mt-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{errorMessage}</div>}
+          {errors.api && <div className="mt-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{errors.api}</div>}
           {successMessage && <div className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-200">{successMessage}</div>}
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+            {/* Full Name */}
             <label className="block">
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
                 <UserRound className="h-4 w-4" />
@@ -105,10 +141,12 @@ function Register() {
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
                 required
-                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${errors.name ? "border-rose-500 focus:ring-rose-500/20" : darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
               />
+              {errors.name && <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{errors.name}</p>}
             </label>
 
+            {/* Email Address */}
             <label className="block">
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
                 <Mail className="h-4 w-4" />
@@ -121,10 +159,12 @@ function Register() {
                 onChange={handleInputChange}
                 placeholder="you@example.com"
                 required
-                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${errors.email ? "border-rose-500 focus:ring-rose-500/20" : darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
               />
+              {errors.email && <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{errors.email}</p>}
             </label>
 
+            {/* Mobile Number */}
             <label className="block">
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
                 <Phone className="h-4 w-4" />
@@ -138,10 +178,12 @@ function Register() {
                 onChange={handleInputChange}
                 placeholder="10-digit mobile number"
                 required
-                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${errors.mobile ? "border-rose-500 focus:ring-rose-500/20" : darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
               />
+              {errors.mobile && <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{errors.mobile}</p>}
             </label>
 
+            {/* Password */}
             <label className="block">
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
                 <LockKeyhole className="h-4 w-4" />
@@ -155,8 +197,9 @@ function Register() {
                   onChange={handleInputChange}
                   placeholder="Create a password"
                   required
-                  minLength={8}
-                  className={`w-full rounded-2xl border px-4 py-3.5 pr-12 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+                  minLength={6}
+                  maxLength={20}
+                  className={`w-full rounded-2xl border px-4 py-3.5 pr-12 outline-none transition-all duration-200 ${errors.password ? "border-rose-500 focus:ring-rose-500/20" : darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
                 />
                 <button
                   type="button"
@@ -166,8 +209,10 @@ function Register() {
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
+              {errors.password && <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{errors.password}</p>}
             </label>
 
+            {/* Confirm Password */}
             <label className="block">
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
                 <LockKeyhole className="h-4 w-4" />
@@ -181,8 +226,9 @@ function Register() {
                   onChange={handleInputChange}
                   placeholder="Repeat your password"
                   required
-                  minLength={8}
-                  className={`w-full rounded-2xl border px-4 py-3.5 pr-12 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+                  minLength={6}
+                  maxLength={20}
+                  className={`w-full rounded-2xl border px-4 py-3.5 pr-12 outline-none transition-all duration-200 ${errors.confirmPassword ? "border-rose-500 focus:ring-rose-500/20" : darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
                 />
                 <button
                   type="button"
@@ -192,12 +238,13 @@ function Register() {
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
+              {errors.confirmPassword && <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{errors.confirmPassword}</p>}
             </label>
 
             <button
               type="submit"
-              disabled={submitting}
-              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-lime-600 px-4 py-3.5 font-semibold text-white shadow-lg shadow-emerald-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
+              disabled={submitting || isFormInvalid}
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-lime-600 px-4 py-3.5 font-semibold text-white shadow-lg shadow-emerald-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? "Creating account..." : "Create account"}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
