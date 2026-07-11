@@ -3,7 +3,9 @@ const Crop = require("../models/crop");
 // GET ALL CROPS
 exports.getCrops = async (req, res) => {
     try {
-        const crops = await Crop.find();
+        const crops = await Crop.find({
+            user: req.user.id
+        });
         res.json(crops);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,8 +15,17 @@ exports.getCrops = async (req, res) => {
 // ADD CROP
 exports.addCrop = async (req, res) => {
     try {
-        const newCrop = await Crop.create(req.body);
-        res.status(201).json(newCrop);
+        const { cropName, quantity, season, location } = req.body;
+
+        const crop = await Crop.create({
+            cropName,
+            quantity,
+            season,
+            location,
+            user: req.user.id
+        });
+
+        res.status(201).json(crop);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -23,14 +34,17 @@ exports.addCrop = async (req, res) => {
 // UPDATE CROP
 exports.updateCrop = async (req, res) => {
     try {
-        const updatedCrop = await Crop.findByIdAndUpdate(
-  req.params.id,
-  req.body,
-  {
-    returnDocument: "after",
-    runValidators: true,
-  }
-);
+        const updatedCrop = await Crop.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                user: req.user.id,
+            },
+            req.body,
+            {
+                returnDocument: "after",
+                runValidators: true,
+            }
+        );
 
         if (!updatedCrop) {
             return res.status(404).json({
@@ -49,7 +63,10 @@ exports.updateCrop = async (req, res) => {
 // DELETE CROP
 exports.deleteCrop = async (req, res) => {
     try {
-        const deletedCrop = await Crop.findByIdAndDelete(req.params.id);
+        const deletedCrop = await Crop.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user.id,
+        });
 
         if (!deletedCrop) {
             return res.status(404).json({
@@ -70,7 +87,10 @@ exports.deleteCrop = async (req, res) => {
 // GET SINGLE CROP
 exports.getCropById = async (req, res) => {
     try {
-        const crop = await Crop.findById(req.params.id);
+        const crop = await Crop.findOne({
+            _id: req.params.id,
+            user: req.user.id,
+        });
 
         if (!crop) {
             return res.status(404).json({
@@ -90,7 +110,8 @@ exports.getCropById = async (req, res) => {
 exports.getCropsBySeason = async (req, res) => {
     try {
         const crops = await Crop.find({
-            season: req.params.season
+            season: req.params.season,
+            user: req.user.id,
         });
 
         res.json(crops);
@@ -101,12 +122,15 @@ exports.getCropsBySeason = async (req, res) => {
     }
 };
 
-
+// GET CROPS BY LOCATION
 exports.getCropsByLocation = async (req, res) => {
     try {
         const { location } = req.query;
 
-        const crops = await Crop.find({ location });
+        const crops = await Crop.find({ 
+            location,
+            user: req.user.id,
+        });
 
         res.json(crops);
     } catch (err) {

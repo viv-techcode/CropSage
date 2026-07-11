@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const CropSchema = new mongoose.Schema(
 {
+    // Associated user who owns or manages this crop record
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     cropName: {
         type: String,
         required: true

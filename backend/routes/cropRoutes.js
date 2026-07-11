@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const requireAuth = require("../middleware/authMiddleware");
+
 const {
     getCrops,
     getCropById,
@@ -12,20 +14,19 @@ const {
     deleteCrop
 } = require("../controllers/cropController");
 
-router.get("/", getCrops);
+// Protected routes
+router.get("/", requireAuth, getCrops);
 
-router.get("/search/location", getCropsByLocation);
+router.get("/search/location", requireAuth, getCropsByLocation);
 
-router.get("/season/:season", getCropsBySeason);
+router.get("/season/:season", requireAuth, getCropsBySeason);
 
-router.get("/:id", getCropById);
+router.get("/:id", requireAuth, getCropById);
 
-router.post("/", addCrop);
+router.post("/", requireAuth, addCrop);
 
-router.put("/:id", updateCrop);
+router.put("/:id", requireAuth, updateCrop);
 
-router.delete("/:id", deleteCrop);
-
-
+router.delete("/:id", requireAuth, deleteCrop);
 
 module.exports = router;
