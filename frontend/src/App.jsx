@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import CropPlanner from "./pages/CropPlanner";
 import AIAssistant from "./pages/AIAssistant";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import ComponentDemo from "./pages/ComponentDemo";
 import ProfitCalculator from "./pages/ProfitCalculator";
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/crop-planner" element={<CropPlanner />} />
           <Route path="/ai-assistant" element={<AIAssistant />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/profit-calculator" element={<ProfitCalculator />} />
           <Route path="/components" element={<ComponentDemo />} />
         </Routes>

@@ -46,7 +46,7 @@ function Home() {
                   </button>
 
                   <Link
-                    to="/login"
+                    to="/register"
                     className="rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm px-7 py-3.5 font-semibold text-slate-800 shadow-sm hover:shadow-md hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-800 transition-all duration-300 hover:-translate-y-0.5"
                   >
                     Sign Up Free
@@ -132,7 +132,7 @@ function Home() {
               </div>
 
               <Link
-                to="/login"
+                to="/register"
                 className="mt-8 inline-block bg-white text-green-700 dark:bg-slate-950 dark:text-emerald-400 px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-slate-50 dark:hover:bg-slate-900 transition-all text-center"
               >
                 Create Free Account →

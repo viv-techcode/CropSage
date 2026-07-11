@@ -100,3 +100,43 @@ button {
   background: #22c55e;
   color: white;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes waveHand {
+  0%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  12% {
+    transform: rotate(14deg) translateY(-1px);
+  }
+  24% {
+    transform: rotate(-8deg) translateY(0);
+  }
+  36% {
+    transform: rotate(12deg) translateY(-1px);
+  }
+  48% {
+    transform: rotate(-4deg) translateY(0);
+  }
+  60% {
+    transform: rotate(10deg) translateY(-1px);
+  }
+  72% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+.animate-wave-hand {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: waveHand 1.8s ease-in-out infinite;
+}

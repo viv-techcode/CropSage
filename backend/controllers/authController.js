@@ -4,18 +4,25 @@ const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, mobile, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !mobile || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const normalizedMobile = mobile.trim();
 
     const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+    }
+
+    const existingMobileUser = await User.findOne({ mobile: normalizedMobile });
+
+    if (existingMobileUser) {
+      return res.status(400).json({ message: "Mobile number already exists" });
     }
 
     const saltRounds = 10;
@@ -24,6 +31,7 @@ const register = async (req, res) => {
     const user = await User.create({
       name,
       email: normalizedEmail,
+      mobile: normalizedMobile,
       password: hashedPassword,
     });
 
@@ -33,6 +41,7 @@ const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        mobile: user.mobile,
       },
     });
   } catch (error) {
@@ -87,6 +96,7 @@ const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        mobile: user.mobile,
       },
     });
   } catch (error) {

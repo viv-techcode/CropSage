@@ -1,19 +1,26 @@
 import { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Eye, EyeOff, Hand, LockKeyhole, Mail } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import AuthShell from "../components/AuthShell";
 import { useTheme } from "../context/ThemeContext";
 
 function Login() {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
-    fullName: "",
-    mobile: "",
+    email: "",
     password: "",
   });
 
   const { theme } = useTheme();
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const darkMode = theme === "dark";
 
   const handleInputChange = (e) => {
@@ -21,213 +28,145 @@ function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.email.trim() || !formData.password) {
+      setErrorMessage("Please enter your email and password.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setErrorMessage("");
+
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email: formData.email,
+        password: formData.password,
+        rememberMe,
+      });
+
+      login(res.data.user, res.data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div
-      className={`min-h-screen flex flex-col transition-all duration-500 ${
-        darkMode ? "bg-slate-950 text-white" : "bg-white text-slate-900"
-      }`}
-    >
+    <div className={`min-h-screen flex flex-col transition-all duration-500 ${darkMode ? "bg-slate-950 text-white" : "bg-white text-slate-900"}`}>
       <Navbar />
 
-      <main
-        className={`relative flex-1 flex items-center justify-center px-4 py-8 md:py-12 overflow-hidden transition-all duration-500 ${
-          darkMode
-            ? "bg-gradient-to-br from-slate-950 via-black to-slate-900"
-            : "bg-gradient-to-br from-green-50 via-white to-emerald-100"
-        }`}
+      <AuthShell
+        badge="Trusted farmer access"
+        description="Sign in to your CropSage dashboard for crop recommendations, mandi intelligence, and weather alerts."
       >
-        <div
-          className={`absolute top-20 left-20 w-72 h-72 rounded-full blur-3xl ${
-            darkMode ? "bg-emerald-500/10" : "bg-green-400/30"
-          }`}
-        />
+        {/* Added 'relative z-10' to ensure this card layer sits securely in front on mobile devices */}
+        <div className={`relative z-10 rounded-[28px] border p-6 sm:p-8 ${darkMode ? "border-slate-800 bg-slate-950/70" : "border-slate-200 bg-white/90"}`}>
+          <div className="flex items-center gap-3">
+            <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${darkMode ? "bg-emerald-500/15 text-emerald-300" : "bg-emerald-50 text-emerald-700"}`}>
+              <Hand className="h-6 w-6 animate-wave-hand" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Welcome back</h2>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Sign in with your email to continue.</p>
+            </div>
+          </div>
 
-        <div
-          className={`absolute bottom-20 right-20 w-96 h-96 rounded-full blur-3xl ${
-            darkMode ? "bg-green-500/5" : "bg-emerald-300/30"
-          }`}
-        />
+          {errorMessage && <div className="mt-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{errorMessage}</div>}
 
-        <div
-          className={`relative z-10 w-full max-w-6xl overflow-hidden rounded-3xl shadow-2xl grid md:grid-cols-2 border transition-all duration-500 ${
-            darkMode ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200"
-          }`}
-        >
-          <div
-            className={`flex items-center justify-center p-6 sm:p-8 md:p-12 order-first md:order-last ${
-              darkMode
-                ? "bg-slate-900/50 border-l border-slate-800"
-                : "bg-slate-50/80 border-l border-slate-100"
-            }`}
-          >
-            <div
-              className={`w-full max-w-md rounded-[32px] border p-8 transition-all duration-500 ${
-                darkMode ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200 shadow-md"
-              }`}
-            >
-              <div className={`flex p-1 rounded-2xl mb-6 ${darkMode ? "bg-slate-800" : "bg-slate-100"}`}>
-                <button
-                  type="button"
-                  onClick={() => setIsSignUp(false)}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium ${
-                    !isSignUp
-                      ? darkMode
-                        ? "bg-slate-700 text-white"
-                        : "bg-white text-slate-900 shadow"
-                      : "text-slate-500"
-                  }`}
-                >
-                  Login
-                </button>
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+            <label className="block">
+              <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
+                <Mail className="h-4 w-4" />
+                Email address
+              </span>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="you@example.com"
+                required
+                className={`w-full rounded-2xl border px-4 py-3.5 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
+              />
+            </label>
 
-                <button
-                  type="button"
-                  onClick={() => setIsSignUp(true)}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium ${
-                    isSignUp
-                      ? darkMode
-                        ? "bg-slate-700 text-white"
-                        : "bg-white text-slate-900 shadow"
-                      : "text-slate-500"
-                  }`}
-                >
-                  Sign Up
-                </button>
-              </div>
-
-              <h2 className={`text-3xl font-bold ${darkMode ? "text-emerald-300" : "text-slate-900"}`}>
-                {isSignUp ? "Create Account" : "Welcome Back"}
-              </h2>
-
-              <p className={`mt-2 mb-6 ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
-                {isSignUp ? "Join CropSage today." : "Login to continue."}
-              </p>
-
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                {isSignUp && (
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    placeholder="Full Name"
-                    className={`w-full rounded-xl px-4 py-3 border ${
-                      darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
-                    }`}
-                  />
-                )}
-
+            <label className="block">
+              <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
+                <LockKeyhole className="h-4 w-4" />
+                Password
+              </span>
+              <div className="relative">
                 <input
-                  type="tel"
-                  name="mobile"
-                  value={formData.mobile}
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Mobile Number"
-                  className={`w-full rounded-xl px-4 py-3 border ${
-                    darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
-                  }`}
+                  placeholder="Enter your password"
+                  required
+                  className={`w-full rounded-2xl border px-4 py-3.5 pr-12 outline-none transition-all duration-200 ${darkMode ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"}`}
                 />
-
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="Password"
-                    className={`w-full rounded-xl px-4 py-3 pr-12 border ${
-                      darkMode ? "bg-slate-800 border-slate-600 text-white" : "bg-slate-50 border-slate-300"
-                    }`}
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-
                 <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold shadow-lg shadow-green-600/20 hover:opacity-90 active:scale-[0.98] transition-transform"
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${darkMode ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"}`}
                 >
-                  {isSignUp ? "Sign Up" : "Login"}
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
-              </form>
-
-              <div className="flex items-center gap-4 my-5">
-                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700" />
-                <span className="text-xs text-slate-400">OR</span>
-                <div className="flex-1 h-px bg-slate-300 dark:bg-slate-700" />
               </div>
+            </label>
 
-              <button
-                type="button"
-                className={`w-full py-3 rounded-xl border flex items-center justify-center gap-2 font-medium active:scale-[0.98] transition-transform ${
-                  darkMode ? "border-slate-700 bg-slate-800 hover:bg-slate-750" : "border-slate-200 bg-slate-50 hover:bg-slate-100"
-                }`}
-              >
-                <FaGoogle />
-                Continue with Google
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                />
+                <span className={darkMode ? "text-slate-300" : "text-slate-600"}>Remember me</span>
+              </label>
+
+              <button type="button" className="font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-300 dark:hover:text-emerald-200">
+                Forgot password?
               </button>
             </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-lime-600 px-4 py-3.5 font-semibold text-white shadow-lg shadow-emerald-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting ? "Please wait..." : "Sign in"}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </button>
+          </form>
+
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">or</span>
+            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
           </div>
 
-          <div
-            className={`p-10 flex flex-col justify-center transition-all duration-500 ${
-              darkMode ? "bg-slate-950 text-white" : "bg-gradient-to-br from-green-700 to-emerald-800 text-white"
-            }`}
+          <button
+            type="button"
+            className={`flex w-full items-center justify-center gap-3 rounded-2xl border px-4 py-3.5 font-semibold transition-all duration-200 hover:-translate-y-0.5 ${darkMode ? "border-slate-800 bg-slate-900 text-white hover:border-slate-700 hover:bg-slate-800" : "border-slate-200 bg-white text-slate-900 hover:border-emerald-200 hover:bg-emerald-50"}`}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 w-fit text-sm font-medium">
-              <span className="w-2 h-2 bg-green-400 rounded-full" />
-              AI-Powered Agriculture
-            </span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white">G</span>
+            Continue with Google
+          </button>
 
-            <h1 className="text-5xl font-bold mt-6">CropSage</h1>
-
-            <p className={`mt-4 text-lg ${darkMode ? "text-slate-300" : "text-green-50"}`}>
-              Smarter farming decisions through AI, weather intelligence and real-time market insights.
-            </p>
-
-            <div className="space-y-4 mt-8">
-              <div className={`p-5 rounded-2xl border ${darkMode ? "bg-slate-900 border-slate-700" : "bg-white/15 border-white/20"}`}>
-                🌱 Smart Crop Planning
-              </div>
-
-              <div className={`p-5 rounded-2xl border ${darkMode ? "bg-slate-900 border-slate-700" : "bg-white/15 border-white/20"}`}>
-                📈 Live Mandi Prices
-              </div>
-
-              <div className={`p-5 rounded-2xl border ${darkMode ? "bg-slate-900 border-slate-700" : "bg-white/15 border-white/20"}`}>
-                ⛅ Weather Risk Alerts
-              </div>
-            </div>
-
-            <div className="flex gap-8 mt-10">
-              <div>
-                <h3 className="text-3xl font-bold">12K+</h3>
-                <p className={darkMode ? "text-slate-400" : "text-green-100"}>Farmers</p>
-              </div>
-
-              <div>
-                <h3 className="text-3xl font-bold">150+</h3>
-                <p className={darkMode ? "text-slate-400" : "text-green-100"}>Mandis</p>
-              </div>
-
-              <div>
-                <h3 className="text-3xl font-bold">24/7</h3>
-                <p className={darkMode ? "text-slate-400" : "text-green-100"}>AI Support</p>
-              </div>
-            </div>
-          </div>
+          <p className={`mt-6 text-center text-sm ${darkMode ? "text-slate-400" : "text-slate-500"}`}>
+            Need an account?{" "}
+            <Link to="/register" className="font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-300 dark:hover:text-emerald-200">
+              Sign up
+            </Link>
+          </p>
         </div>
-      </main>
+      </AuthShell>
 
       <Footer />
     </div>
