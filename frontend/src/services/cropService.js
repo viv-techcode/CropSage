@@ -1,24 +1,18 @@
-import axios from "axios";
+import authService from "./authService";
 
-const API = axios.create({
-    baseURL: "http://localhost:5000/api/crops",
-});
+export const getCrops = () => authService.get("/crops");
 
+export const getCropById = (id) =>
+  authService.get(`/crops/${id}`);
 
-export const getCrops = () => API.get("/");
+export const addCrop = (crop) =>
+  authService.post("/crops", crop);
 
+export const updateCrop = (id, crop) =>
+  authService.put(`/crops/${id}`, crop);
 
-export const getCropById = (id) => API.get(`/${id}`);
-
-
-export const addCrop = (crop) => API.post("/", crop);
-
-
-export const updateCrop = (id, crop) => API.put(`/${id}`, crop);
-
-
-export const deleteCrop = (id) => API.delete(`/${id}`);
-
+export const deleteCrop = (id) =>
+  authService.delete(`/crops/${id}`);
 
 export const searchByLocation = (location) =>
-    API.get(`/search/location?location=${location}`);
+  authService.get(`/crops/search/location?location=${location}`);
