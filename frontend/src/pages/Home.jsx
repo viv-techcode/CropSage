@@ -3,6 +3,7 @@ import Card from "../components/Card";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Wheat } from "lucide-react";
 
 function Home() {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ function Home() {
                 <div className="absolute -bottom-6 left-6 right-6 sm:right-auto sm:w-80 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/80 p-5 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] dark:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
                   <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">AI Recommendation</p>
                   <h3 className="mt-1.5 text-xl font-extrabold text-green-700 dark:text-emerald-400 tracking-tight flex items-center gap-1.5">
-                    Best Crop: Wheat <span className="animate-bounce duration-1000">🌾</span>
+                    Best Crop: Wheat <Wheat className="animate-bounce duration-1000 h-5 w-5 inline-block" />
                   </h3>
                   <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
                     Estimated Profit <span className="text-emerald-600 dark:text-emerald-400 font-bold">+18%</span>
