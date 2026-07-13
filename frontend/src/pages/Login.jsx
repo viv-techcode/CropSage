@@ -184,7 +184,7 @@ function Login() {
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 whitespace-nowrap">or sign in with email</span>
             <div className={`h-px flex-1 ${darkMode ? "bg-slate-800" : "bg-slate-200"}`} />
           </div>
-console.log(import.meta.env.VITE_API_URL);
+
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <span className={`mb-2 flex items-center gap-2 text-sm font-medium ${darkMode ? "text-slate-300" : "text-slate-600"}`}>
