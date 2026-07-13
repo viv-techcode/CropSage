@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://crop-sage-2h8lonxno-vivetaem.vercel.app",
+      "https://crop-sage-pi.vercel.app",
     ],
     credentials: true,
   })
