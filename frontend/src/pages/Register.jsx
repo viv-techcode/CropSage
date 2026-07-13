@@ -21,7 +21,6 @@ function Register() {
     confirmPassword: "",
   });
 
-  // Track errors for each field individually in real-time
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -36,7 +35,6 @@ function Register() {
   const navigate = useNavigate();
   const darkMode = theme === "dark";
 
-  // Validate fields in real-time as the data changes
   useEffect(() => {
     const newErrors = { name: "", email: "", mobile: "", password: "", confirmPassword: "", api: "" };
 
@@ -65,15 +63,18 @@ function Register() {
       newErrors.confirmPassword = "Passwords do not match.";
     }
 
-    setErrors(newErrors);
+    setErrors((prev) => ({
+      ...newErrors,
+      api: prev.api,
+    }));
   }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, api: "" }));
   };
 
-  // Check if there are any validation errors or empty required fields
   const isFormInvalid = 
     Object.values(errors).some(error => error !== "") || 
     !formData.name || !formData.email || !formData.mobile || !formData.password || !formData.confirmPassword;
@@ -99,10 +100,32 @@ function Register() {
       setFormData({ name: "", email: "", mobile: "", password: "", confirmPassword: "" });
       setTimeout(() => navigate("/profile", { state: { onboarding: true } }), 5000);
     } catch (err) {
-      setErrors(prev => ({
-        ...prev,
-        api: err.response?.data?.message || "Something went wrong. Please try again."
-      }));
+      if (err.response?.data?.errors) {
+        const validationErrors = {
+          name: "",
+          email: "",
+          mobile: "",
+          password: "",
+          confirmPassword: "",
+          api: "",
+        };
+
+        err.response.data.errors.forEach((error) => {
+          if (error.path && validationErrors.hasOwnProperty(error.path)) {
+            validationErrors[error.path] = error.msg;
+          }
+        });
+
+        setErrors((prev) => ({
+          ...prev,
+          ...validationErrors,
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          api: err.response?.data?.message || "Something went wrong. Please try again.",
+        }));
+      }
     } finally {
       setSubmitting(false);
     }

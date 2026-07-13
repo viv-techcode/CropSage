@@ -25,6 +25,10 @@ function Login() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
 
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
@@ -50,7 +54,16 @@ function Login() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleGoogleLogin = () => {
@@ -60,8 +73,25 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.email.trim() || !formData.password) {
-      setErrorMessage("Please enter your email and password.");
+    const newErrors = {
+      email: "",
+      password: "",
+    };
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
+      newErrors.email = "Please enter a valid email.";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+    }
+
+    if (newErrors.email || newErrors.password) {
+      setErrors(newErrors);
       return;
     }
 
@@ -69,16 +99,38 @@ function Login() {
       setSubmitting(true);
       setErrorMessage("");
 
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
-        rememberMe,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email: formData.email,
+          password: formData.password,
+          rememberMe,
+        }
+      );
 
       login(res.data.user, res.data.token);
+
       navigate("/dashboard");
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Something went wrong. Please try again.");
+      if (err.response?.data?.errors) {
+        const backendErrors = {
+          email: "",
+          password: "",
+        };
+
+        err.response.data.errors.forEach((error) => {
+          if (backendErrors.hasOwnProperty(error.path)) {
+            backendErrors[error.path] = error.msg;
+          }
+        });
+
+        setErrors(backendErrors);
+      } else {
+        setErrorMessage(
+          err.response?.data?.message ||
+            "Something went wrong. Please try again."
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -155,6 +207,11 @@ function Login() {
                     : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/10"
                 }`}
               />
+              {errors.email && (
+                <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -184,6 +241,11 @@ function Login() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-sm sm:text-base">
