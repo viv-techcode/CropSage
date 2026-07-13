@@ -97,7 +97,7 @@ function Register() {
       login(response.data.user, response.data.token);
       setSuccessMessage("Registration successful. Complete your farm profile to continue.");
       setFormData({ name: "", email: "", mobile: "", password: "", confirmPassword: "" });
-      setTimeout(() => navigate("/profile", { state: { onboarding: true } }), 800);
+      setTimeout(() => navigate("/profile", { state: { onboarding: true } }), 5000);
     } catch (err) {
       setErrors(prev => ({
         ...prev,

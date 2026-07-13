@@ -29,7 +29,7 @@ function Navbar() {
   const closeMobileMenu = () => setMobileMenuOpen(false);
   
   const navLinkClass = 
-    "rounded-lg px-3 py-1.5 text-[15px] font-semibold text-white/90 transition duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white";
+    "rounded-lg px-3 py-1.5 text-base font-semibold text-white/90 transition duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white";
 
   return (
     <nav className="sticky top-0 z-40 border-b border-white/10 bg-gradient-to-r from-emerald-700 via-green-600 to-teal-600 text-white shadow-lg shadow-emerald-950/10">
@@ -54,7 +54,7 @@ function Navbar() {
 
             {user ? (
               <div className="relative">
-                <div className="flex items-center overflow-hidden rounded-xl border border-white/15 bg-white/10 text-sm font-semibold shadow-sm backdrop-blur-sm transition hover:bg-white/20">
+                <div className="flex items-center overflow-hidden rounded-xl border border-white/15 bg-white/10 text-base font-semibold shadow-sm backdrop-blur-sm transition hover:bg-white/20">
                   <Link to="/profile" className="px-3 py-2" onClick={() => setProfileMenuOpen(false)}>Profile</Link>
                   <button type="button" onClick={() => setProfileMenuOpen((open) => !open)} className="border-l border-white/20 px-2.5 py-2" aria-label="Open profile menu" aria-expanded={profileMenuOpen}>
                     <FaChevronDown className={`text-xs transition-transform duration-200 ${profileMenuOpen ? "rotate-180" : ""}`} />
@@ -70,18 +70,22 @@ function Navbar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="rounded-xl bg-white/10 px-3 py-2 text-sm font-semibold transition hover:bg-white/20">Login</Link>
+              <Link to="/login" className="rounded-xl bg-white/10 px-3 py-2 text-base font-semibold transition hover:bg-white/20">Login</Link>
             )}
           </div>
 
           <div className="flex items-center gap-2 lg:ml-0 ml-auto">
-            <button onClick={toggleTheme} className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 transition duration-200 hover:scale-105 hover:bg-white/20" aria-label="Toggle theme">
-              {theme === "light" ? <FaMoon className="text-[15px]" /> : <FaSun className="text-[15px] text-yellow-300" />}
-            </button>
-
-            <button type="button" onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 transition duration-200 hover:bg-white/20 lg:hidden" aria-label="Toggle navigation" aria-expanded={mobileMenuOpen}>
-              <span className={`transition-transform duration-300 ${mobileMenuOpen ? "rotate-90" : ""}`}>{mobileMenuOpen ? <FaTimes /> : <FaBars />}</span>
-            </button>
+            <button 
+  onClick={toggleTheme} 
+  className="flex h-13 w-13 items-center justify-center rounded-xl border border-white/15 bg-white/10 transition duration-200 hover:scale-105 hover:bg-white/20" 
+  aria-label="Toggle theme"
+>
+  {theme === "light" ? (
+    <FaMoon className="h-10 w-10 text-white" />
+  ) : (
+    <FaSun className="h-500 w-10 text-yellow-300" />
+  )}
+</button>
           </div>
 
         </div>
@@ -89,16 +93,16 @@ function Navbar() {
         <div className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out lg:hidden ${mobileMenuOpen ? "grid-rows-[1fr] pb-4 opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
           <div className="min-h-0">
             <div className="space-y-1 rounded-2xl border border-white/15 bg-white/10 p-2 backdrop-blur-sm">
-              {navItems.map((item) => <Link key={item.to} to={item.to} onClick={closeMobileMenu} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-white/95 transition hover:translate-x-1 hover:bg-white/15">{item.label}</Link>)}
+              {navItems.map((item) => <Link key={item.to} to={item.to} onClick={closeMobileMenu} className="block rounded-xl px-3 py-2.5 text-base font-semibold text-white/95 transition hover:translate-x-1 hover:bg-white/15">{item.label}</Link>)}
               {user ? (
                 <div className="mt-2 border-t border-white/15 pt-2">
-                  <Link to="/profile" onClick={closeMobileMenu} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-white/95 transition hover:translate-x-1 hover:bg-white/15">Profile</Link>
-                  <button onClick={handleLogout} className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-rose-100 transition hover:translate-x-1 hover:bg-rose-500/20">
+                  <Link to="/profile" onClick={closeMobileMenu} className="block rounded-xl px-3 py-2.5 text-base font-semibold text-white/95 transition hover:translate-x-1 hover:bg-white/15">Profile</Link>
+                  <button onClick={handleLogout} className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-base font-semibold text-rose-100 transition hover:translate-x-1 hover:bg-rose-500/20">
                     <span>Logout</span>
                     <FaSignOutAlt className="text-base" />
                   </button>
                 </div>
-              ) : <Link to="/login" onClick={closeMobileMenu} className="mt-2 block rounded-xl bg-white/15 px-3 py-2.5 text-sm font-semibold transition hover:bg-white/25">Login</Link>}
+              ) : <Link to="/login" onClick={closeMobileMenu} className="mt-2 block rounded-xl bg-white/15 px-3 py-2.5 text-base font-semibold transition hover:bg-white/25">Login</Link>}
             </div>
           </div>
         </div>

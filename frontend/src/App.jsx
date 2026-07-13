@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Page Imports
+
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -12,8 +12,9 @@ import ProfitCalculator from "./pages/ProfitCalculator";
 import Profile from "./pages/Profile";
 import AIAssistant from "./pages/AIAssistant";
 import ComponentDemo from "./pages/ComponentDemo";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
-// Provider & Wrapper Imports
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CropProvider } from "./context/CropContext";
 
@@ -22,14 +23,15 @@ function App() {
     <BrowserRouter>
       <CropProvider>
         <Routes>
-          {/* Public Routes */}
+         
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/components" element={<ComponentDemo />} />
 
-          {/* Protected Routes */}
+          
           <Route
             path="/dashboard"
             element={
