@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import authService from "../services/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, Hand, LockKeyhole, Mail } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -67,7 +67,7 @@ function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
   };
 
   const handleSubmit = async (e) => {
@@ -99,14 +99,11 @@ function Login() {
       setSubmitting(true);
       setErrorMessage("");
 
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email: formData.email,
-          password: formData.password,
-          rememberMe,
-        }
-      );
+      const res = await authService.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+        rememberMe,
+      });
 
       login(res.data.user, res.data.token);
 
