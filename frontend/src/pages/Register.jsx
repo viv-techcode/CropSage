@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import authService from "../services/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Phone, ShieldCheck, UserRound } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -88,7 +88,7 @@ function Register() {
     try {
       setSubmitting(true);
 
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await authService.post("/auth/register", {
         name: formData.name,
         email: formData.email,
         mobile: formData.mobile,
