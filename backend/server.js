@@ -10,6 +10,8 @@ const authRoutes = require("./routes/authRoutes");
 const cropRoutes = require("./routes/cropRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 
+const conversationRoutes = require("./routes/conversationRoutes"); 
+
 const app = express();
 
 connectDB();
@@ -30,6 +32,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/conversations", conversationRoutes); 
 
 const PORT = process.env.PORT || 5000;
 

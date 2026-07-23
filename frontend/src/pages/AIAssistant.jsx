@@ -189,7 +189,7 @@ function AIAssistant() {
           darkMode ? "bg-[#111827] border-slate-800" : "bg-white border-slate-200"
         }`}>
           <div className="flex justify-between items-center md:hidden mb-4">
-            <span className="font-semibold text-xs text-green-500 uppercase tracking-wider">Navigation Menu</span>
+            <span className="font-semibold text-sm text-green-500 uppercase tracking-wider">Navigation Menu</span>
             <button 
               onClick={() => setIsSidebarOpen(false)} 
               className="p-1 hover:bg-slate-500/10 rounded-lg"
@@ -201,21 +201,21 @@ function AIAssistant() {
 
           <button 
             onClick={resetChat}
-            className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-200 border ${
+            className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-base font-medium transition-all duration-200 border ${
               darkMode ? "border-slate-700 hover:bg-slate-800 text-slate-200" : "border-slate-300 hover:bg-slate-100 text-slate-700"
             }`}
           >
-            <Plus className="w-4 h-4" /> New Chat
+            <Plus className="w-5 h-5" /> New Chat
           </button>
 
           <div 
-            className="mt-6 flex-1 overflow-y-auto space-y-4 text-xs font-medium text-slate-400"
+            className="mt-6 flex-1 overflow-y-auto space-y-4 text-sm font-medium text-slate-400"
             style={{ scrollbarGutter: "stable" }}
           >
             <div>
-              <div className="px-2 mb-2 text-[11px] font-semibold tracking-wider uppercase opacity-60">History</div>
+              <div className="px-2 mb-2 text-sm font-semibold tracking-wider uppercase opacity-60">History</div>
               {chatHistory.length === 0 ? (
-                <div className="px-2 py-3 text-xs italic opacity-40">No recent queries in current workspace session.</div>
+                <div className="px-2 py-3 text-sm italic opacity-40">No recent queries in current workspace session.</div>
               ) : (
                 <div className="space-y-1">
                   {chatHistory.map((item) => (
@@ -226,13 +226,13 @@ function AIAssistant() {
                         setIsSidebarOpen(false);
                         handleSendMessage(item.content);
                       }}
-                      className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 max-w-full truncate ${
+                      className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 max-w-full truncate ${
                         loading ? "pointer-events-none opacity-40" : ""
                       } ${
                         darkMode ? "hover:bg-slate-800/60 text-slate-300" : "hover:bg-slate-100 text-slate-700"
                       }`}
                     >
-                      <MessageSquare className="w-3.5 h-3.5 opacity-70 shrink-0" />
+                      <MessageSquare className="w-4 h-4 opacity-70 shrink-0" />
                       <span className="truncate w-full block">{item.content}</span>
                     </div>
                   ))}
@@ -256,10 +256,10 @@ function AIAssistant() {
                 <Menu className="w-5 h-5" />
               </button>
               <div>
-                <h2 className="font-bold text-sm md:text-base tracking-wide flex items-center gap-2">
-                  <Sprout className="w-4 h-4 text-[#22c55e]" /> CropSage AI
+                <h2 className="font-bold text-base md:text-lg tracking-wide flex items-center gap-2">
+                  <Sprout className="w-5 h-5 text-[#22c55e]" /> CropSage AI
                 </h2>
-                <p className="text-[11px] text-slate-400 font-medium tracking-wide">Powered by Gemini</p>
+                <p className="text-sm text-slate-400 font-medium tracking-wide">Powered by Gemini</p>
               </div>
             </div>
           </div>
@@ -273,14 +273,14 @@ function AIAssistant() {
                       msg.sender === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border text-xs ${
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border text-sm ${
                       msg.sender === "user" ? "bg-slate-500/10 border-slate-400/20" : "bg-green-500/10 border-green-500/20 text-[#22c55e]"
                     }`}>
-                      {msg.sender === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      {msg.sender === "user" ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                     </div>
 
                     <div className="flex flex-col max-w-full">
-                      <div className={`px-4 py-3 rounded-3xl text-sm leading-6 whitespace-pre-wrap shadow-sm ${
+                      <div className={`px-4 py-3 rounded-3xl text-base leading-6 whitespace-pre-wrap shadow-sm ${
                         msg.sender === "user"
                           ? "bg-[#22c55e] text-white rounded-br-lg"
                           : darkMode
@@ -318,7 +318,7 @@ function AIAssistant() {
                           </div>
                         )}
                       </div>
-                      <p className={`text-[10px] opacity-50 mt-1 px-1.5 ${msg.sender === "user" ? "text-right" : "text-left"}`}>
+                      <p className={`text-xs opacity-50 mt-1 px-1.5 ${msg.sender === "user" ? "text-right" : "text-left"}`}>
                         {msg.time}
                       </p>
                     </div>
@@ -337,13 +337,13 @@ function AIAssistant() {
                               setIsSidebarOpen(false);
                               handleSendMessage(item.text);
                             }}
-                            className={`p-3.5 text-left rounded-xl border text-xs font-medium transition-all duration-200 flex flex-col justify-between gap-2 hover:scale-[1.01] ${
+                            className={`p-3.5 text-left rounded-xl border text-sm font-medium transition-all duration-200 flex flex-col justify-between gap-2 hover:scale-[1.01] ${
                               loading ? "opacity-50 cursor-not-allowed" : ""
                             } ${
                               darkMode ? "border-slate-800 bg-[#1e293b]/40 hover:bg-[#1e293b]" : "border-slate-200 bg-white hover:bg-slate-50"
                             }`}
                           >
-                            <span className="text-slate-400"><IconComponent className="w-4 h-4" /></span>
+                            <span className="text-slate-400"><IconComponent className="w-5 h-5" /></span>
                             <span>{item.text}</span>
                           </button>
                         );
@@ -355,8 +355,8 @@ function AIAssistant() {
 
               {loading && (
                 <div className="flex gap-3 mr-auto max-w-[80%] animate-pulse">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-500/10 border border-green-500/20 text-[#22c55e]">
-                    <Bot className="w-4 h-4" />
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center bg-green-500/10 border border-green-500/20 text-[#22c55e]">
+                    <Bot className="w-5 h-5" />
                   </div>
                   <div>
                     <div className={`rounded-3xl rounded-bl-lg px-4 py-3.5 flex gap-1 items-center ${
@@ -366,7 +366,7 @@ function AIAssistant() {
                       <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-bounce [animation-delay:150ms]" />
                       <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-bounce [animation-delay:300ms]" />
                     </div>
-                    <p className="text-[11px] mt-1.5 px-1 opacity-60 font-medium tracking-wide">
+                    <p className="text-sm mt-1.5 px-1 opacity-60 font-medium tracking-wide">
                       CropSage AI is thinking...
                     </p>
                   </div>
@@ -383,7 +383,7 @@ function AIAssistant() {
           }`}>
             <form
               onSubmit={handleFormSubmit}
-              className={`max-w-3xl mx-auto border rounded-2xl p-2 flex items-end gap-2 shadow-2xl focus-within:ring-2 focus-within:ring-green-500/20 transition-all duration-300 ${
+                className={`max-w-3xl mx-auto border rounded-2xl p-2 flex items-end gap-2 shadow-2xl focus-within:ring-2 focus-within:ring-green-500/20 transition-all duration-300 ${
                 darkMode ? "bg-[#111827] border-slate-800" : "bg-white border-slate-200"
               }`}
             >
@@ -399,7 +399,7 @@ function AIAssistant() {
                   }
                 }}
                 disabled={loading}
-                className={`flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none resize-none placeholder:text-slate-500 max-h-[140px] overflow-y-auto ${
+                className={`flex-1 bg-transparent px-3 py-2 text-base focus:outline-none resize-none placeholder:text-slate-500 max-h-[140px] overflow-y-auto ${
                   loading ? "cursor-not-allowed opacity-60" : ""
                 }`}
                 placeholder={loading ? "CropSage AI is answering..." : "Ask anything about farming..."}
@@ -415,7 +415,7 @@ function AIAssistant() {
                 }`}
                 aria-label="Send message"
               >
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-5 h-5" />
               </button>
             </form>
           </div>

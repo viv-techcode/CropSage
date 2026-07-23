@@ -4,12 +4,10 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-const getFarmAdvice = async (message) => {
-  const prompt = `
-You are CropSage AI, an agriculture assistant for farmers across India.
+const getFarmAdvice = async (message, history = []) => {
+  const systemInstruction = `You are CropSage AI, an agriculture assistant for farmers across India.
 
 Guidelines:
-
 1. Answer ONLY agriculture, livestock, fisheries, horticulture, and allied farming questions.
 2. If the question is unrelated to farming, politely reply:
    "CropSage only provides assistance for agriculture and farming-related topics."
@@ -29,15 +27,23 @@ Guidelines:
 11. Never invent facts. If uncertain, clearly say so.
 12. Avoid unnecessary explanations and disclaimers.
 13. When appropriate, provide step-by-step actions using short bullet points.
-14. If the farmer asks a follow-up question, answer it considering the previous context if available.
+14. If the farmer asks a follow-up question, answer it considering the previous context if available.`;
 
-Farmer's Question:
-${message}
-`;
+  const formattedHistory = history.map((msg) => ({
+    role: msg.role === "assistant" || msg.role === "model" ? "model" : "user",
+    parts: [{ text: msg.content }],
+  }));
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: prompt,
+  const chat = ai.chats.create({
+    model: "gemini-2.5-flash",
+    config: {
+      systemInstruction: systemInstruction,
+    },
+    history: formattedHistory,
+  });
+
+  const response = await chat.sendMessage({
+    message: message,
   });
 
   return response.text;
