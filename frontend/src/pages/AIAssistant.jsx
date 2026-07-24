@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 import { 
   Bot, 
   ArrowUp, 
@@ -13,9 +14,17 @@ import {
   Bug, 
   Droplet, 
   TrendingUp, 
-  User 
+  User,
+  Trash2
 } from "lucide-react";
 import { askAI } from "../services/aiService";
+import {
+  getConversations,
+  createConversation,
+  getConversation,
+  sendConversationMessage,
+  deleteConversation
+} from "../services/conversationService";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
 
@@ -25,7 +34,6 @@ const SUGGESTIONS = [
   { text: "Best fertilizer for wheat?", icon: Droplet },
   { text: "How can I save water in irrigation?", icon: TrendingUp },
 ];
-
 
 const INTRO_FEATURES = [
   "Crop recommendations",
@@ -49,30 +57,44 @@ const createInitialMessages = () => [
   },
 ];
 
+const formatMessages = (rawMessages) => {
+  if (!rawMessages || rawMessages.length === 0) return createInitialMessages();
+  return rawMessages.map((m) => ({
+    id: m._id || crypto.randomUUID(),
+    sender: m.role === "assistant" || m.sender === "ai" ? "ai" : "user",
+    content: m.content || m.text,
+    time: m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : getTimestamp()
+  }));
+};
+
 function AIAssistant() {
   const { theme } = useTheme();
+  const { isAuthenticated } = useAuth();
   const darkMode = theme === "dark";
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  
-  const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("cropsage_chat_messages");
-    return saved ? JSON.parse(saved) : createInitialMessages();
-  });
+  const [messages, setMessages] = useState(createInitialMessages);
+  const [conversations, setConversations] = useState([]);
+  const [activeConversationId, setActiveConversationId] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  
-  useEffect(() => {
-    localStorage.setItem("cropsage_chat_messages", JSON.stringify(messages));
-  }, [messages]);
+  const fetchConversationsList = async () => {
+    if (!isAuthenticated) return;
+    try {
+      const data = await getConversations();
+      const list = Array.isArray(data) ? data : data?.conversations || [];
+      setConversations(list);
+    } catch {
+      toast.error("Failed to fetch sidebar conversation history.");
+    }
+  };
 
-  const chatHistory = useMemo(
-    () => messages.filter((m) => m.sender === "user").slice(-10),
-    [messages]
-  );
+  useEffect(() => {
+    fetchConversationsList();
+  }, [isAuthenticated]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -85,6 +107,37 @@ function AIAssistant() {
     }
   }, [inputValue]);
 
+  const handleSelectConversation = async (convId) => {
+    if (loading || activeConversationId === convId) return;
+    setIsSidebarOpen(false);
+    setLoading(true);
+
+    try {
+      const data = await getConversation(convId);
+      const fetchedConversation = data.conversation || data;
+      setActiveConversationId(convId);
+      setMessages(formatMessages(fetchedConversation?.messages));
+    } catch {
+      toast.error("Could not retrieve selected conversation context.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteConversation = async (e, convId) => {
+    e.stopPropagation();
+    try {
+      await deleteConversation(convId);
+      setConversations((prev) => prev.filter((c) => (c._id || c.id) !== convId));
+      if (activeConversationId === convId) {
+        resetChat();
+      }
+      toast.success("Conversation removed.");
+    } catch {
+      toast.error("Failed to delete target conversation.");
+    }
+  };
+
   const handleSendMessage = async (textToSend) => {
     if (loading) return;
     
@@ -95,37 +148,51 @@ function AIAssistant() {
     }
 
     if (!textToSend) setInputValue("");
-    
-    const userMsg = { 
-      id: crypto.randomUUID(), 
-      sender: "user", 
-      content: query,
-      time: getTimestamp()
-    };
-    
-    setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
     try {
-      const data = await askAI(query);
-      
-      if (!data || !data.success) {
-        throw new Error(data?.error || "Malformed backend response payload.");
-      }
+      if (isAuthenticated) {
+        let currentConvId = activeConversationId;
 
-      const reply = typeof data.reply === "string" && data.reply.trim().length > 0
-        ? data.reply.trim()
-        : "Sorry, I couldn't generate a response.";
+        if (!currentConvId) {
+          const newConv = await createConversation();
+          currentConvId = newConv._id || newConv.id || newConv.conversation?._id;
+          setActiveConversationId(currentConvId);
+        }
 
-      setMessages((prev) => [
-        ...prev,
-        { 
+        const updatedConversation = await sendConversationMessage(currentConvId, query);
+        const convData = updatedConversation.conversation || updatedConversation;
+        
+        setMessages(formatMessages(convData?.messages));
+        fetchConversationsList();
+      } else {
+        const tempUserMsg = { 
           id: crypto.randomUUID(), 
-          sender: "ai", 
-          content: reply,
+          sender: "user", 
+          content: query,
           time: getTimestamp()
-        },
-      ]);
+        };
+        setMessages((prev) => [...prev, tempUserMsg]);
+
+        const data = await askAI(query);
+        if (!data || !data.success) {
+          throw new Error(data?.error || "Malformed backend response payload.");
+        }
+
+        const reply = typeof data.reply === "string" && data.reply.trim().length > 0
+          ? data.reply.trim()
+          : "Sorry, I couldn't generate a response.";
+
+        setMessages((prev) => [
+          ...prev,
+          { 
+            id: crypto.randomUUID(), 
+            sender: "ai", 
+            content: reply,
+            time: getTimestamp()
+          },
+        ]);
+      }
     } catch (error) {
       if (error.response?.status === 429) {
         toast.error("AI request limit reached. Please try again later.");
@@ -159,13 +226,29 @@ function AIAssistant() {
     handleSendMessage();
   };
 
-  const resetChat = () => {
-    const freshStart = createInitialMessages();
-    setMessages(freshStart);
-    localStorage.setItem("cropsage_chat_messages", JSON.stringify(freshStart));
+  const resetChat = async () => {
+    if (loading) return;
     setInputValue("");
-    setLoading(false);
     setIsSidebarOpen(false);
+
+    if (isAuthenticated) {
+      try {
+        setLoading(true);
+        const newConv = await createConversation();
+        const convId = newConv._id || newConv.id || newConv.conversation?._id;
+        setActiveConversationId(convId);
+        setMessages(createInitialMessages());
+        fetchConversationsList();
+      } catch {
+        toast.error("Could not start a new conversation.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setActiveConversationId(null);
+      setMessages(createInitialMessages());
+      setLoading(false);
+    }
   };
 
   return (
@@ -182,7 +265,6 @@ function AIAssistant() {
           />
         )}
 
-        {/* Sidebar Navigation & History Panel */}
         <aside className={`fixed inset-y-0 left-0 md:relative md:flex w-64 lg:w-72 p-4 flex-col z-50 border-r transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         } ${
@@ -201,7 +283,10 @@ function AIAssistant() {
 
           <button 
             onClick={resetChat}
+            disabled={loading}
             className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-base font-medium transition-all duration-200 border ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            } ${
               darkMode ? "border-slate-700 hover:bg-slate-800 text-slate-200" : "border-slate-300 hover:bg-slate-100 text-slate-700"
             }`}
           >
@@ -214,35 +299,49 @@ function AIAssistant() {
           >
             <div>
               <div className="px-2 mb-2 text-sm font-semibold tracking-wider uppercase opacity-60">History</div>
-              {chatHistory.length === 0 ? (
-                <div className="px-2 py-3 text-sm italic opacity-40">No recent queries in current workspace session.</div>
+              {conversations.length === 0 ? (
+                <div className="px-2 py-3 text-sm italic opacity-40">No saved conversations found.</div>
               ) : (
                 <div className="space-y-1">
-                  {chatHistory.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => {
-                        if (loading) return;
-                        setIsSidebarOpen(false);
-                        handleSendMessage(item.content);
-                      }}
-                      className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 max-w-full truncate ${
-                        loading ? "pointer-events-none opacity-40" : ""
-                      } ${
-                        darkMode ? "hover:bg-slate-800/60 text-slate-300" : "hover:bg-slate-100 text-slate-700"
-                      }`}
-                    >
-                      <MessageSquare className="w-4 h-4 opacity-70 shrink-0" />
-                      <span className="truncate w-full block">{item.content}</span>
-                    </div>
-                  ))}
+                  {conversations.map((item) => {
+                    const convId = item._id || item.id;
+                    const isSelected = activeConversationId === convId;
+                    return (
+                      <div
+                        key={convId}
+                        onClick={() => handleSelectConversation(convId)}
+                        className={`group flex items-center justify-between gap-2.5 px-2.5 py-2.5 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 max-w-full ${
+                          loading ? "pointer-events-none opacity-40" : ""
+                        } ${
+                          isSelected
+                            ? darkMode
+                              ? "bg-slate-800 text-green-400"
+                              : "bg-slate-100 text-green-700"
+                            : darkMode
+                            ? "hover:bg-slate-800/60 text-slate-300"
+                            : "hover:bg-slate-100 text-slate-700"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 truncate flex-1 min-w-0">
+                          <MessageSquare className="w-4 h-4 opacity-70 shrink-0" />
+                          <span className="truncate block">{item.title || "Untitled Chat"}</span>
+                        </div>
+                        <button
+                          onClick={(e) => handleDeleteConversation(e, convId)}
+                          className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-opacity shrink-0"
+                          aria-label="Delete conversation"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
           </div>
         </aside>
 
-        {/* Central Chat Stream & Input Layer */}
         <main className="flex flex-1 flex-col h-full overflow-hidden relative">
           <div className={`flex items-center justify-between px-4 py-3 md:px-6 border-b transition-colors ${
             darkMode ? "bg-[#0f172a]/80 border-slate-800" : "bg-white/80 border-slate-200"
@@ -298,7 +397,6 @@ function AIAssistant() {
                           {msg.content}
                         </ReactMarkdown>
 
-                        {/* Interactive operational features list rendering tightly under the greeting header */}
                         {msg.isIntro && (
                           <div className="mt-3 flex flex-col gap-1.5 border-t border-slate-700/30 pt-3">
                             {INTRO_FEATURES.map((feature, fIdx) => (
@@ -324,7 +422,6 @@ function AIAssistant() {
                     </div>
                   </div>
 
-                  {/* Horizontal static layout recommendations displayed clean underneath the intro box on loading setup initialization */}
                   {idx === 0 && messages.length <= 1 && !loading && (
                     <div className="pl-11 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-xl animate-[fadeIn_0.2s_ease-out]">
                       {SUGGESTIONS.map((item, index) => {
@@ -383,7 +480,7 @@ function AIAssistant() {
           }`}>
             <form
               onSubmit={handleFormSubmit}
-                className={`max-w-3xl mx-auto border rounded-2xl p-2 flex items-end gap-2 shadow-2xl focus-within:ring-2 focus-within:ring-green-500/20 transition-all duration-300 ${
+              className={`max-w-3xl mx-auto border rounded-2xl p-2 flex items-end gap-2 shadow-2xl focus-within:ring-2 focus-within:ring-green-500/20 transition-all duration-300 ${
                 darkMode ? "bg-[#111827] border-slate-800" : "bg-white border-slate-200"
               }`}
             >
